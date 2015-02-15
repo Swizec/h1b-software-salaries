@@ -29,7 +29,7 @@ var H1BGraph = React.createClass({
     },
 
     getInitialState: function () {
-        return {raw_data: []};
+        return {rawData: []};
     },
 
     componentDidMount: function () {
@@ -39,7 +39,43 @@ var H1BGraph = React.createClass({
     render: function () {
         return (
             <svg width={this.props.width} height={this.props.height}>
+                <Histogram data={this.state.rawData} bins="20" width="500" height="500"/>
             </svg>
+        );
+    }
+});
+
+var Histogram = React.createClass({
+    componentDidMount: function () {
+        this.histogram = d3.layout.histogram()
+                           .bins(Number(this.props.bins))
+                           .value(function (d) { return d.base_salary; });
+    },
+
+    render: function () {
+        if (!this.histogram) {
+            return null;
+        }
+
+        var bars = this.histogram(this.props.data),
+            width = d3.scale.linear()
+                      .domain([0, d3.max(bars.map(function (d) { return d.y; }))])
+                      .range([0, Number(this.props.width)]),
+            y = d3.scale.linear()
+                  .domain([0, d3.max(bars.map(function (d) { return d.x+d.dx; }))])
+                  .range([0, Number(this.props.height)]);
+
+
+        var barNodes = bars.map(function (bar) {
+            return (
+                <rect width={width(bar.y)} height={y(bar.dx)-2} y={y(bar.x)} x="0" className="bar"></rect>
+            );
+        });
+
+        return (
+            <g className="histogram">
+                {barNodes}
+            </g>
         );
     }
 });
