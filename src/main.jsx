@@ -39,7 +39,7 @@ var H1BGraph = React.createClass({
     render: function () {
         return (
             <svg width={this.props.width} height={this.props.height}>
-                <Histogram data={this.state.rawData} bins="20" width="500" height="500"/>
+                <Histogram data={this.state.rawData} bins="30" width="500" height="500"/>
             </svg>
         );
     }
@@ -52,11 +52,12 @@ var Histogram = React.createClass({
                            .value(function (d) { return d.base_salary; });
     },
 
-    mergeZeroes: function (mem, d) {
-        if (d.y) {
+    mergeSmall: function (mem, d) {
+        if (d.y > 3 || !mem.length) {
             mem.push(d);
         }else{
             mem[mem.length-1].dx += d.dx;
+            mem[mem.length-1].y += d.y;
         }
 
         return mem;
@@ -68,7 +69,7 @@ var Histogram = React.createClass({
         }
 
         var bars = this.histogram(this.props.data)
-                       .reduce(this.mergeZeroes, []),
+                       .reduce(this.mergeSmall, []),
             counts = bars.map(function (d) { return d.y; }),
             width = d3.scale.log()
                       .domain([d3.min(counts), d3.max(counts)])
@@ -77,7 +78,7 @@ var Histogram = React.createClass({
                   .domain([0, d3.max(bars.map(function (d) { return d.x+d.dx; }))])
                   .range([0, Number(this.props.height)]);
 
-        console.log(d3.range(bars.map(function (d) { return d.y; })));
+        console.log(bars);
 
         var barNodes = bars.map(function (bar) {
             var translate = "translate(" + 0 + "," + y(bar.x) + ")";
