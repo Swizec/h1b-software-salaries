@@ -67,12 +67,15 @@ var Histogram = React.createClass({
 
 
         var barNodes = bars.map(function (bar) {
+            var translate = "translate(" + 0 + "," + y(bar.x) + ")";
+
             return (
-                <rect width={width(bar.y)}
-                      height={y(bar.dx)-2}
-                      y={y(bar.x)}
-                      x="0"
-                      className="bar"></rect>
+                <g transform={translate} className="bar">
+                    <rect width={width(bar.y)}
+                          height={y(bar.dx)-2}>
+                    </rect>
+                    <text text-anchor="start" x={width(bar.y)+5} y={y(bar.dx)/2+3}>{bar.y}</text>
+                </g>
             );
         });
 
