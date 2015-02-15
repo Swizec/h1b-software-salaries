@@ -81,25 +81,38 @@ var Histogram = React.createClass({
         console.log(bars);
 
         var barNodes = bars.map(function (bar) {
-            var translate = "translate(" + 0 + "," + y(bar.x) + ")";
-
             return (
-                <g transform={translate} className="bar">
-                    <rect width={width(bar.y)}
-                          height={y(bar.dx)-2}>
-                    </rect>
-                    <text text-anchor="end"
-                          x={width(bar.y)+5}
-                          y={y(bar.dx)/2+3}>
-                        {bar.y}
-                    </text>
-                </g>
+                <Bar label={bar.y}
+                     x="0"
+                     y={y(bar.x)}
+                     width={width(bar.y)}
+                     height={y(bar.dx)}
+                     label={bar.y} />
             );
         });
 
         return (
             <g className="histogram">
                 {barNodes}
+            </g>
+        );
+    }
+});
+
+var Bar = React.createClass({
+    render: function () {
+        var translate = "translate(" + this.props.x + "," + this.props.y + ")";
+
+        return (
+            <g transform={translate} className="bar">
+                <rect width={this.props.width}
+                      height={this.props.height-2}>
+                </rect>
+                <text text-anchor="end"
+                      x={this.props.width+5}
+                      y={this.props.height/2+3}>
+                    {this.props.label}
+                </text>
             </g>
         );
     }
