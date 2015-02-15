@@ -108,8 +108,8 @@ var Bar = React.createClass({
                 <rect width={this.props.width}
                       height={this.props.height-2}>
                 </rect>
-                <text text-anchor="end"
-                      x={this.props.width+5}
+                <text textAnchor="end"
+                      x={this.props.width-5}
                       y={this.props.height/2+3}>
                     {this.props.label}
                 </text>
