@@ -1,0 +1,26 @@
+{
+  "name": "react-d3js-experiment",
+  "version": "0.0.0",
+  "description": "Experiment to see if we can get react.js and d3.js playing well together.",
+  "main": "index.html",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/Swizec/react-d3js-experiment.git"
+  },
+  "author": "Swizec",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Swizec/react-d3js-experiment/issues"
+  },
+  "homepage": "https://github.com/Swizec/react-d3js-experiment",
+  "devDependencies": {
+    "grunt": "^0.4.5",
+    "grunt-contrib-less": "^1.0.0",
+    "grunt-contrib-watch": "^0.6.1",
+    "grunt-react": "^0.10.0",
+    "jit-grunt": "^0.9.1"
+  }
+}

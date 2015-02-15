@@ -1,4 +1,3 @@
 bower_components
-build/*.js
-build/**/*.js
-build/**/*.json
+build/**/*
+node_modules

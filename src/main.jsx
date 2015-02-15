@@ -68,7 +68,11 @@ var Histogram = React.createClass({
 
         var barNodes = bars.map(function (bar) {
             return (
-                <rect width={width(bar.y)} height={y(bar.dx)-2} y={y(bar.x)} x="0" className="bar"></rect>
+                <rect width={width(bar.y)}
+                      height={y(bar.dx)-2}
+                      y={y(bar.x)}
+                      x="0"
+                      className="bar"></rect>
             );
         });
 
