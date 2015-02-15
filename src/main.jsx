@@ -52,19 +52,32 @@ var Histogram = React.createClass({
                            .value(function (d) { return d.base_salary; });
     },
 
+    mergeZeroes: function (mem, d) {
+        if (d.y) {
+            mem.push(d);
+        }else{
+            mem[mem.length-1].dx += d.dx;
+        }
+
+        return mem;
+    },
+
     render: function () {
         if (!this.histogram) {
             return null;
         }
 
-        var bars = this.histogram(this.props.data),
-            width = d3.scale.linear()
-                      .domain([0, d3.max(bars.map(function (d) { return d.y; }))])
+        var bars = this.histogram(this.props.data)
+                       .reduce(this.mergeZeroes, []),
+            counts = bars.map(function (d) { return d.y; }),
+            width = d3.scale.log()
+                      .domain([d3.min(counts), d3.max(counts)])
                       .range([0, Number(this.props.width)]),
             y = d3.scale.linear()
                   .domain([0, d3.max(bars.map(function (d) { return d.x+d.dx; }))])
                   .range([0, Number(this.props.height)]);
 
+        console.log(d3.range(bars.map(function (d) { return d.y; })));
 
         var barNodes = bars.map(function (bar) {
             var translate = "translate(" + 0 + "," + y(bar.x) + ")";
@@ -74,7 +87,11 @@ var Histogram = React.createClass({
                     <rect width={width(bar.y)}
                           height={y(bar.dx)-2}>
                     </rect>
-                    <text text-anchor="start" x={width(bar.y)+5} y={y(bar.dx)/2+3}>{bar.y}</text>
+                    <text text-anchor="end"
+                          x={width(bar.y)+5}
+                          y={y(bar.dx)/2+3}>
+                        {bar.y}
+                    </text>
                 </g>
             );
         });
