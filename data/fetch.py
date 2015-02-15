@@ -15,7 +15,7 @@ def download(url):
 def parse():
     d = pq(filename="raw.html")
 
-    with open("data/h1bs.csv", "wb") as csvfile:
+    with open("h1bs.csv", "wb") as csvfile:
         writer = csv.writer(csvfile)
 
         header = [th.text.lower() for th in d("thead th")]
