@@ -78,8 +78,6 @@ var Histogram = React.createClass({
                   .domain([0, d3.max(bars.map(function (d) { return d.x+d.dx; }))])
                   .range([0, Number(this.props.height)]);
 
-        console.log(bars);
-
         var barNodes = bars.map(function (bar) {
             return (
                 <Bar label={bar.y}
@@ -93,7 +91,10 @@ var Histogram = React.createClass({
 
         return (
             <g className="histogram">
-                {barNodes}
+                <g className="bars">
+                    {barNodes}
+                </g>
+                <Axis data={bars} height={this.props.height} />
             </g>
         );
     }
@@ -113,6 +114,28 @@ var Bar = React.createClass({
                       y={this.props.height/2+3}>
                     {this.props.label}
                 </text>
+            </g>
+        );
+    }
+});
+
+var Axis = React.createClass({
+    render: function () {
+        var y = d3.scale.linear()
+                  .domain([0,
+                           d3.max(this.props.data.map(
+                               function (d) { return d.x+d.dx; }))])
+                  .range([0, this.props.height]);
+
+        var axis = d3.svg.axis()
+                     .scale(y)
+                     .ticks(this.props.data.length)
+                     .orient("left");
+
+        console.log(axis(<g></g>));
+
+        return (
+            <g className="axis">
             </g>
         );
     }
