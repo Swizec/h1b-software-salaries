@@ -106,7 +106,7 @@ var Histogram = React.createClass({
 
     makeBar: function (bar) {
         var props = {label: bar.y,
-                     x: 0,
+                     x: 83,
                      y: this.yScale(bar.x),
                      width: this.widthScale(bar.y),
                      height: this.yScale(bar.dx),
@@ -121,7 +121,7 @@ var Histogram = React.createClass({
         var barNodes = this.state.bars.map(this.makeBar);
 
         return (
-            <g className="histogram">
+            <g className="histogram" transform="translate(0, 10)">
                 <g className="bars">
                     {barNodes}
                     <Axis data={this.state.bars} height={this.props.height} />
@@ -155,7 +155,10 @@ var Axis = React.createClass({
         this.yScale = d3.scale.linear();
         this.axis = d3.svg.axis()
                       .scale(this.yScale)
-                      .orient("left");
+                      .orient("left")
+                      .tickFormat(function (d) {
+                          return "$"+this.yScale.tickFormat()(d);
+                      }.bind(this));
 
         this.update_d3(this.props);
     },
@@ -171,7 +174,12 @@ var Axis = React.createClass({
                          function (d) { return d.x+d.dx; }))])
             .range([0, props.height]);
 
-        this.axis.ticks(props.data.length);
+        this.axis
+            .ticks(props.data.length)
+            .tickValues(props.data
+                             .map(function (d) { return d.x; })
+                             .concat(props.data[props.data.length-1].x
+                                    +props.data[props.data.length-1].dx));
     },
 
     componentDidUpdate: function () { this.renderAxis(); },
@@ -185,7 +193,7 @@ var Axis = React.createClass({
 
     render: function () {
         return (
-            <g className="axis" transform="translate(200, 0)">
+            <g className="axis" transform="translate(80, 0)">
             </g>
         );
     }
