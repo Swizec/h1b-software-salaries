@@ -37,15 +37,31 @@ var H1BGraph = React.createClass({
     },
 
     render: function () {
+        if (!this.state.rawData.length) {
+            return false;
+        }
+
+        var params = {
+            bins: 30,
+            width: 500,
+            height: 500
+        };
+
         return (
             <svg width={this.props.width} height={this.props.height}>
-                <Histogram data={this.state.rawData} bins="30" width="500" height="500"/>
+                <Histogram {...params} data={this.state.rawData} />
             </svg>
         );
     }
 });
 
 var Histogram = React.createClass({
+    propTypes: {
+        bins: React.PropTypes.number.isRequired,
+        width: React.PropTypes.number.isRequired,
+        height: React.PropTypes.number.isRequired
+    },
+
     componentWillMount: function () {
         this.histogram = d3.layout.histogram()
                            .value(function (d) { return d.base_salary; });
@@ -60,7 +76,7 @@ var Histogram = React.createClass({
     },
 
     update_d3: function (props) {
-        this.histogram.bins(Number(props.bins));
+        this.histogram.bins(props.bins);
 
         var bars = this.histogram(props.data)
                        .reduce(this.mergeSmall, []),
@@ -70,11 +86,11 @@ var Histogram = React.createClass({
 
         this.widthScale
             .domain([d3.min(counts), d3.max(counts)])
-            .range([9, Number(props.width)]);
+            .range([9, props.width]);
 
         this.yScale
             .domain([0, d3.max(bars.map(function (d) { return d.x+d.dx; }))])
-            .range([0, Number(props.height)]);
+            .range([0, props.height]);
     },
 
     mergeSmall: function (mem, d) {
@@ -154,10 +170,14 @@ var Axis = React.createClass({
                      d3.max(props.data.map(
                          function (d) { return d.x+d.dx; }))])
             .range([0, props.height]);
+
         this.axis.ticks(props.data.length);
     },
 
-    componentDidUpdate: function () {
+    componentDidUpdate: function () { this.renderAxis(); },
+    componentDidMount: function () { this.renderAxis(); },
+
+    renderAxis: function () {
         var node = this.getDOMNode();
 
         d3.select(node).call(this.axis);
