@@ -79,13 +79,15 @@ var Histogram = React.createClass({
                   .range([0, Number(this.props.height)]);
 
         var barNodes = bars.map(function (bar) {
+            var props = {label: bar.y,
+                         x: 0,
+                         y: y(bar.x),
+                         width: width(bar.y),
+                         height: y(bar.dx),
+                         label: bar.y}
+
             return (
-                <Bar label={bar.y}
-                     x="0"
-                     y={y(bar.x)}
-                     width={width(bar.y)}
-                     height={y(bar.dx)}
-                     label={bar.y} />
+                <HistogramBar {...props} />
             );
         });
 
@@ -100,7 +102,7 @@ var Histogram = React.createClass({
     }
 });
 
-var Bar = React.createClass({
+var HistogramBar = React.createClass({
     render: function () {
         var translate = "translate(" + this.props.x + "," + this.props.y + ")";
 
@@ -132,10 +134,10 @@ var Axis = React.createClass({
                      .ticks(this.props.data.length)
                      .orient("left");
 
-        console.log(axis(<g></g>));
+        d3.select(".axis").call(axis);
 
         return (
-            <g className="axis">
+            <g className="axis" transform="translate(200, 0)">
             </g>
         );
     }
