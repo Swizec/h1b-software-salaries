@@ -122,20 +122,23 @@ var HistogramBar = React.createClass({
 });
 
 var Axis = React.createClass({
-    render: function () {
+    componentDidMount: function () {
         var y = d3.scale.linear()
                   .domain([0,
                            d3.max(this.props.data.map(
                                function (d) { return d.x+d.dx; }))])
-                  .range([0, this.props.height]);
-
-        var axis = d3.svg.axis()
+                  .range([0, this.props.height]),
+            axis = d3.svg.axis()
                      .scale(y)
                      .ticks(this.props.data.length)
                      .orient("left");
 
-        d3.select(".axis").call(axis);
+        var node = this.getDOMNode();
 
+        d3.select(node).call(axis);
+    },
+
+    render: function () {
         return (
             <g className="axis" transform="translate(200, 0)">
             </g>
