@@ -46,10 +46,35 @@ var H1BGraph = React.createClass({
 });
 
 var Histogram = React.createClass({
-    componentDidMount: function () {
+    componentWillMount: function () {
         this.histogram = d3.layout.histogram()
-                           .bins(Number(this.props.bins))
                            .value(function (d) { return d.base_salary; });
+        this.widthScale = d3.scale.log();
+        this.yScale = d3.scale.linear();
+
+        this.update_d3(this.props);
+    },
+
+    componentWillReceiveProps: function (newProps) {
+        this.update_d3(newProps);
+    },
+
+    update_d3: function (props) {
+        this.histogram.bins(Number(props.bins));
+
+        var bars = this.histogram(props.data)
+                       .reduce(this.mergeSmall, []),
+            counts = bars.map(function (d) { return d.y; });
+
+        this.setState({bars: bars});
+
+        this.widthScale
+            .domain([d3.min(counts), d3.max(counts)])
+            .range([9, Number(props.width)]);
+
+        this.yScale
+            .domain([0, d3.max(bars.map(function (d) { return d.x+d.dx; }))])
+            .range([0, Number(props.height)]);
     },
 
     mergeSmall: function (mem, d) {
@@ -63,40 +88,28 @@ var Histogram = React.createClass({
         return mem;
     },
 
+    makeBar: function (bar) {
+        var props = {label: bar.y,
+                     x: 0,
+                     y: this.yScale(bar.x),
+                     width: this.widthScale(bar.y),
+                     height: this.yScale(bar.dx),
+                     label: bar.y}
+
+        return (
+            <HistogramBar {...props} />
+        );
+    },
+
     render: function () {
-        if (!this.histogram) {
-            return null;
-        }
-
-        var bars = this.histogram(this.props.data)
-                       .reduce(this.mergeSmall, []),
-            counts = bars.map(function (d) { return d.y; }),
-            width = d3.scale.log()
-                      .domain([d3.min(counts), d3.max(counts)])
-                      .range([0, Number(this.props.width)]),
-            y = d3.scale.linear()
-                  .domain([0, d3.max(bars.map(function (d) { return d.x+d.dx; }))])
-                  .range([0, Number(this.props.height)]);
-
-        var barNodes = bars.map(function (bar) {
-            var props = {label: bar.y,
-                         x: 0,
-                         y: y(bar.x),
-                         width: width(bar.y),
-                         height: y(bar.dx),
-                         label: bar.y}
-
-            return (
-                <HistogramBar {...props} />
-            );
-        });
+        var barNodes = this.state.bars.map(this.makeBar);
 
         return (
             <g className="histogram">
                 <g className="bars">
                     {barNodes}
+                    <Axis data={this.state.bars} height={this.props.height} />
                 </g>
-                <Axis data={bars} height={this.props.height} />
             </g>
         );
     }
@@ -122,20 +135,32 @@ var HistogramBar = React.createClass({
 });
 
 var Axis = React.createClass({
-    componentDidMount: function () {
-        var y = d3.scale.linear()
-                  .domain([0,
-                           d3.max(this.props.data.map(
-                               function (d) { return d.x+d.dx; }))])
-                  .range([0, this.props.height]),
-            axis = d3.svg.axis()
-                     .scale(y)
-                     .ticks(this.props.data.length)
-                     .orient("left");
+    componentWillMount: function () {
+        this.yScale = d3.scale.linear();
+        this.axis = d3.svg.axis()
+                      .scale(this.yScale)
+                      .orient("left");
 
+        this.update_d3(this.props);
+    },
+
+    componentWillReceiveProps: function (newProps) {
+        this.update_d3(newProps);
+    },
+
+    update_d3: function (props) {
+        this.yScale
+            .domain([0,
+                     d3.max(props.data.map(
+                         function (d) { return d.x+d.dx; }))])
+            .range([0, props.height]);
+        this.axis.ticks(props.data.length);
+    },
+
+    componentDidUpdate: function () {
         var node = this.getDOMNode();
 
-        d3.select(node).call(axis);
+        d3.select(node).call(this.axis);
     },
 
     render: function () {
