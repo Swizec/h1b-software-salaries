@@ -105,12 +105,19 @@ var Histogram = React.createClass({
     },
 
     makeBar: function (bar) {
-        var props = {label: bar.y,
+        var percent = bar.y/this.props.data.length*100;
+
+        if (percent < 1) {
+            percent = percent.toFixed(2);
+        }else{
+            percent = percent.toFixed(0);
+        }
+
+        var props = {label: percent+"%",
                      x: 83,
                      y: this.yScale(bar.x),
                      width: this.widthScale(bar.y),
-                     height: this.yScale(bar.dx),
-                     label: bar.y}
+                     height: this.yScale(bar.dx)}
 
         return (
             <HistogramBar {...props} />
