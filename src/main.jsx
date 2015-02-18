@@ -44,13 +44,23 @@ var H1BGraph = React.createClass({
         var params = {
             bins: 30,
             width: 500,
-            height: 500
+            height: 500,
+            axisMargin: 83,
+            topMargin: 10,
+            bottomMargin: 5
         };
 
         return (
-            <svg width={this.props.width} height={this.props.height}>
-                <Histogram {...params} data={this.state.rawData} />
-            </svg>
+            <div>
+                <div className="row">
+                    <div className="col-md-12">
+                        <svg width={params.width} height={params.height}>
+                            <Histogram {...params} data={this.state.rawData} />
+                        </svg>
+                    </div>
+                </div>
+                <Controls data={this.state.rawData} />
+            </div>
         );
     }
 });
@@ -86,11 +96,11 @@ var Histogram = React.createClass({
 
         this.widthScale
             .domain([d3.min(counts), d3.max(counts)])
-            .range([9, props.width]);
+            .range([9, props.width-props.axisMargin]);
 
         this.yScale
             .domain([0, d3.max(bars.map(function (d) { return d.x+d.dx; }))])
-            .range([0, props.height]);
+            .range([0, props.height-props.topMargin-props.bottomMargin]);
     },
 
     mergeSmall: function (mem, d) {
@@ -114,7 +124,7 @@ var Histogram = React.createClass({
         }
 
         var props = {label: percent+"%",
-                     x: 83,
+                     x: this.props.axisMargin,
                      y: this.yScale(bar.x),
                      width: this.widthScale(bar.y),
                      height: this.yScale(bar.dx)}
@@ -125,13 +135,13 @@ var Histogram = React.createClass({
     },
 
     render: function () {
-        var barNodes = this.state.bars.map(this.makeBar);
+        var translate = "translate(0, "+this.props.topMargin+")";
 
         return (
-            <g className="histogram" transform="translate(0, 10)">
+            <g className="histogram" transform={translate}>
                 <g className="bars">
-                    {barNodes}
-                    <Axis data={this.state.bars} height={this.props.height} />
+                    {this.state.bars.map(this.makeBar)}
+                    <Axis {...this.props} data={this.state.bars}  />
                 </g>
             </g>
         );
@@ -145,7 +155,8 @@ var HistogramBar = React.createClass({
         return (
             <g transform={translate} className="bar">
                 <rect width={this.props.width}
-                      height={this.props.height-2}>
+                      height={this.props.height-2}
+                      transform="translate(0, 1)">
                 </rect>
                 <text textAnchor="end"
                       x={this.props.width-5}
@@ -179,7 +190,7 @@ var Axis = React.createClass({
             .domain([0,
                      d3.max(props.data.map(
                          function (d) { return d.x+d.dx; }))])
-            .range([0, props.height]);
+            .range([0, props.height-props.topMargin-props.bottomMargin]);
 
         this.axis
             .ticks(props.data.length)
@@ -199,14 +210,25 @@ var Axis = React.createClass({
     },
 
     render: function () {
+        var translate = "translate("+(this.props.axisMargin-3)+", 0)";
         return (
-            <g className="axis" transform="translate(80, 0)">
+            <g className="axis" transform={translate}>
             </g>
         );
     }
 });
 
+var Controls = React.createClass({
+    render: function () {
+        return (
+            <div className="row">
+                Hai there
+            </div>
+        );
+    }
+});
+
 React.render(
-    <H1BGraph width="1024" height="768" url="data/h1bs.csv" />,
-    document.getElementById('graph')
+    <H1BGraph url="data/h1bs.csv" />,
+    document.querySelectorAll('.container')[0]
 );
