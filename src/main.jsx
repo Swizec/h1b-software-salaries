@@ -28,8 +28,13 @@ var H1BGraph = React.createClass({
           }.bind(this));
     },
 
+    updateDataFilter: function (filter) {
+        this.setState({dataFilter: filter});
+    },
+
     getInitialState: function () {
-        return {rawData: []};
+        return {rawData: [],
+                dataFilter: function () { return true; }};
     },
 
     componentDidMount: function () {
@@ -37,10 +42,6 @@ var H1BGraph = React.createClass({
     },
 
     render: function () {
-        if (!this.state.rawData.length) {
-            return false;
-        }
-
         var params = {
             bins: 30,
             width: 500,
@@ -50,16 +51,18 @@ var H1BGraph = React.createClass({
             bottomMargin: 5
         };
 
+        var filteredData = this.state.rawData.filter(this.state.dataFilter);
+
         return (
             <div>
                 <div className="row">
                     <div className="col-md-12">
                         <svg width={params.width} height={params.height}>
-                            <Histogram {...params} data={this.state.rawData} />
+                            <Histogram {...params} data={filteredData} />
                         </svg>
                     </div>
                 </div>
-                <Controls data={this.state.rawData} />
+                <Controls data={this.state.rawData} updateDataFilter={this.updateDataFilter} />
             </div>
         );
     }
@@ -135,6 +138,10 @@ var Histogram = React.createClass({
     },
 
     render: function () {
+        if (!this.props.data.length) {
+            return false;
+        }
+
         var translate = "translate(0, "+this.props.topMargin+")";
 
         return (
@@ -227,8 +234,13 @@ var Controls = React.createClass({
                                   return key == year;
                               });
 
-        this.setState({yearsOn: yearsOn,
-                       bu: true});
+        this.props.updateDataFilter((function (year) {
+            return function (d) {
+                return d.submit_date.getFullYear() == year;
+            }
+        })(year));
+
+        this.setState({yearsOn: yearsOn});
     },
 
     getYears: function () {
@@ -244,8 +256,7 @@ var Controls = React.createClass({
             yearsOn = _.zipObject(years,
                                   years.map(function () { return false; }));
 
-        return {yearsOn: yearsOn,
-                bu: false};
+        return {yearsOn: yearsOn};
     },
 
     render: function () {
@@ -294,4 +305,3 @@ React.render(
     <H1BGraph url="data/h1bs.csv" />,
     document.querySelectorAll('.container')[0]
 );
-2
