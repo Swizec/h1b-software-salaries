@@ -219,11 +219,73 @@ var Axis = React.createClass({
 });
 
 var Controls = React.createClass({
+    pickYear: function (year) {
+        var yearsOn = this.state.yearsOn;
+
+        yearsOn = _.mapValues(yearsOn,
+                              function (value, key) {
+                                  return key == year;
+                              });
+
+        this.setState({yearsOn: yearsOn,
+                       bu: true});
+    },
+
+    getYears: function () {
+        return _.keys(_.groupBy(this.props.data,
+                                function (d) {
+                                    return d.submit_date.getFullYear()
+                                }))
+                .map(Number);
+    },
+
+    getInitialState: function () {
+        var years = this.getYears(),
+            yearsOn = _.zipObject(years,
+                                  years.map(function () { return false; }));
+
+        return {yearsOn: yearsOn,
+                bu: false};
+    },
+
     render: function () {
         return (
             <div className="row">
-                Hai there
+            {this.getYears().map(function (year) {
+                return (
+                    <Toggle label={year} year={year} on={this.state.yearsOn[year]} onYearPick={this.pickYear} />
+                );
+            }.bind(this))}
             </div>
+        );
+    }
+});
+
+var Toggle = React.createClass({
+    getInitialState: function () {
+        return {on: false};
+    },
+
+    handleClick: function (event) {
+        this.setState({on: !this.state.on});
+        this.props.onYearPick(this.props.year);
+    },
+
+    componentWillReceiveProps: function (newProps) {
+        this.setState({on: newProps.on});
+    },
+
+    render: function () {
+        var className = "btn btn-default";
+
+        if (this.state.on) {
+            className += " btn-primary";
+        }
+
+        return (
+            <button className={className} onClick={this.handleClick}>
+                {this.props.label}
+            </button>
         );
     }
 });
@@ -232,3 +294,4 @@ React.render(
     <H1BGraph url="data/h1bs.csv" />,
     document.querySelectorAll('.container')[0]
 );
+2
