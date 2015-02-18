@@ -42,6 +42,10 @@ var H1BGraph = React.createClass({
     },
 
     render: function () {
+        if (!this.state.rawData.length) {
+            return false;
+        }
+
         var params = {
             bins: 30,
             width: 500,
@@ -138,10 +142,6 @@ var Histogram = React.createClass({
     },
 
     render: function () {
-        if (!this.props.data.length) {
-            return false;
-        }
-
         var translate = "translate(0, "+this.props.topMargin+")";
 
         return (
@@ -260,6 +260,7 @@ var Controls = React.createClass({
     },
 
     render: function () {
+
         return (
             <div className="row">
             {this.getYears().map(function (year) {
