@@ -1,5 +1,37 @@
 
 var H1BGraph = React.createClass({
+    cleanJobs: function (title) {
+        title = title.replace(/[^a-z ]/gi, '');
+
+        if (title.match(/consultant|specialist|expert|prof|advis|consult/)) {
+            title = "consultant";
+        }else if (title.match(/analyst|strateg|scien/)) {
+            title = "analyst";
+        }else if (title.match(/manager|associate|train|manag|direct|supervis|mgr|chief/)) {
+            title = "manager";
+        }else if (title.match(/architect/)) {
+            title = "architect";
+        }else if (title.match(/lead|coord/)) {
+            title = "lead";
+        }else if (title.match(/eng|enig|ening|eign/)) {
+            title = "engineer";
+        }else if (title.match(/program/)) {
+            title = "programmer";
+        }else if (title.match(/design/)) {
+            title = "designer";
+        }else if (title.match(/develop|dvelop|develp|devlp|devel|deelop|devlop|devleo|deveo/)) {
+            title = "developer";
+        }else if (title.match(/tester|qa|quality|assurance|test/)) {
+            title = "tester";
+        }else if (title.match(/admin|support|packag|integrat/)) {
+            title = "administrator";
+        }else{
+            title = "other";
+        }
+
+        return title;
+    },
+
     loadRawData: function () {
         var dateFormat = d3.time.format("%m/%d/%Y");
         d3.csv(this.props.url)
@@ -13,11 +45,12 @@ var H1BGraph = React.createClass({
                       start_date: dateFormat.parse(d['start date']),
                       case_status: d['case status'],
                       job_title: d['job title'],
+                      clean_job_title: this.cleanJobs(d['job title']),
                       base_salary: Number(d['base salary']),
                       salary_to: d['salary to'] ? Number(d['salary to']) : null,
                       city: d.city,
                       state: d.state};
-          })
+          }.bind(this))
           .get(function (error, rows) {
               if (error) {
                   console.error(error);
@@ -241,10 +274,23 @@ var Controls = React.createClass({
                     .map(Number);
         };
 
+        var getJobTitles = function (data) {
+            return _.keys(_.groupBy(data,
+                                    function (d) {
+                                        return d.clean_job_title;
+                                    }));
+        };
+
         return (
-            <ControlRow data={this.props.data}
-                        getToggleValues={getYears}
-                        updateDataFilter={this.updateYearFilter} />
+            <div>
+                <ControlRow data={this.props.data}
+                            getToggleValues={getYears}
+                            updateDataFilter={this.updateYearFilter} />
+
+                <ControlRow data={this.props.data}
+                            getToggleValues={getJobTitles}
+                            updateDataFilter={this.updateJobTitleFilter} />
+            </div>
         )
     }
 });
