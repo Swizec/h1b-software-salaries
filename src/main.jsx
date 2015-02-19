@@ -226,46 +226,61 @@ var Axis = React.createClass({
 });
 
 var Controls = React.createClass({
-    pickYear: function (year) {
-        var yearsOn = this.state.yearsOn;
-
-        yearsOn = _.mapValues(yearsOn,
-                              function (value, key) {
-                                  return key == year;
-                              });
-
-        this.props.updateDataFilter((function (year) {
-            return function (d) {
-                return d.submit_date.getFullYear() == year;
-            }
-        })(year));
-
-        this.setState({yearsOn: yearsOn});
+    updateYearFilter: function (year) {
+        this.props.updateDataFilter(function (d) {
+            return d.submit_date.getFullYear() == year;
+        });
     },
 
-    getYears: function () {
-        return _.keys(_.groupBy(this.props.data,
-                                function (d) {
-                                    return d.submit_date.getFullYear()
-                                }))
-                .map(Number);
+    render: function () {
+        var getYears = function (data) {
+            return _.keys(_.groupBy(data,
+                                    function (d) {
+                                        return d.submit_date.getFullYear()
+                                    }))
+                    .map(Number);
+        };
+
+        return (
+            <ControlRow data={this.props.data}
+                        getToggleValues={getYears}
+                        updateDataFilter={this.updateYearFilter} />
+        )
+    }
+});
+
+var ControlRow = React.createClass({
+    makePick: function (picked) {
+        var togglesOn = this.state.togglesOn;
+
+        togglesOn = _.mapValues(togglesOn,
+                              function (value, key) {
+                                  return key == picked;
+                              });
+
+        this.props.updateDataFilter(picked);
+
+        this.setState({togglesOn: togglesOn});
     },
 
     getInitialState: function () {
-        var years = this.getYears(),
-            yearsOn = _.zipObject(years,
-                                  years.map(function () { return false; }));
+        var toggles = this.props.getToggleValues(this.props.data),
+            togglesOn = _.zipObject(toggles,
+                                    toggles.map(function () { return false; }));
 
-        return {yearsOn: yearsOn};
+        return {togglesOn: togglesOn};
     },
 
     render: function () {
 
         return (
             <div className="row">
-            {this.getYears().map(function (year) {
+            {this.props.getToggleValues(this.props.data).map(function (value) {
                 return (
-                    <Toggle label={year} year={year} on={this.state.yearsOn[year]} onYearPick={this.pickYear} />
+                    <Toggle label={value}
+                            value={value}
+                            on={this.state.togglesOn[value]}
+                            onClick={this.makePick} />
                 );
             }.bind(this))}
             </div>
@@ -280,7 +295,7 @@ var Toggle = React.createClass({
 
     handleClick: function (event) {
         this.setState({on: !this.state.on});
-        this.props.onYearPick(this.props.year);
+        this.props.onClick(this.props.value);
     },
 
     componentWillReceiveProps: function (newProps) {
