@@ -260,9 +260,34 @@ var Axis = React.createClass({
 
 var Controls = React.createClass({
     updateYearFilter: function (year) {
-        this.props.updateDataFilter(function (d) {
+        this.setState({yearFilter: function (d) {
             return d.submit_date.getFullYear() == year;
-        });
+        }});
+    },
+
+    updateJobTitleFilter: function (title) {
+        this.setState({jobTitleFilter: function (d) {
+            return d.clean_job_title == title;
+        }});
+    },
+
+    getInitialState: function () {
+        return {yearFilter: function () { return true; },
+                jobTitleFilter: function () { return true; }};
+    },
+
+    componentDidUpdate: function () {
+        this.props.updateDataFilter(
+            (function (filters) {
+                return function (d) {
+                    return filters.yearFilter(d) && filters.jobTitleFilter(d);
+                };
+            })(this.state)
+        );
+    },
+
+    shouldComponentUpdate: function (nextProps, nextState) {
+        return !_.isEqual(this.state, nextState);
     },
 
     render: function () {
