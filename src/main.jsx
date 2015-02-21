@@ -88,7 +88,11 @@ var H1BGraph = React.createClass({
             bottomMargin: 5
         };
 
-        var filteredData = this.state.rawData.filter(this.state.dataFilter);
+        var filteredData = this.state.rawData
+                               .filter(function (d) {
+                                   return d.case_status == "certified";
+                               })
+                               .filter(this.state.dataFilter);
 
         return (
             <div>
@@ -306,6 +310,15 @@ var Controls = React.createClass({
                                     }));
         };
 
+        var getStatuses = function (data) {
+            return _.keys(_.groupBy(data,
+                                    function (d) {
+                                        return d.case_status;
+                                    }));
+        };
+
+        console.log(getStatuses(this.props.data));
+
         return (
             <div>
                 <ControlRow data={this.props.data}
@@ -346,6 +359,7 @@ var ControlRow = React.createClass({
 
         return (
             <div className="row">
+                <div className="col-md-12">
             {this.props.getToggleValues(this.props.data).map(function (value) {
                 return (
                     <Toggle label={value}
@@ -353,7 +367,8 @@ var ControlRow = React.createClass({
                             on={this.state.togglesOn[value]}
                             onClick={this.makePick} />
                 );
-            }.bind(this))}
+             }.bind(this))}
+                </div>
             </div>
         );
     }
