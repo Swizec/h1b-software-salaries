@@ -263,16 +263,28 @@ var Axis = React.createClass({
 });
 
 var Controls = React.createClass({
-    updateYearFilter: function (year) {
-        this.setState({yearFilter: function (d) {
+    updateYearFilter: function (year, reset) {
+        var filter = function (d) {
             return d.submit_date.getFullYear() == year;
-        }});
+        };
+
+        if (reset) {
+            filter = function () { return true; };
+        }
+
+        this.setState({yearFilter: filter});
     },
 
-    updateJobTitleFilter: function (title) {
-        this.setState({jobTitleFilter: function (d) {
+    updateJobTitleFilter: function (title, reset) {
+        var filter = function (d) {
             return d.clean_job_title == title;
-        }});
+        };
+
+        if (reset) {
+            filter = function () { return true; };
+        }
+
+        this.setState({jobTitleFilter: filter});
     },
 
     getInitialState: function () {
@@ -310,15 +322,6 @@ var Controls = React.createClass({
                                     }));
         };
 
-        var getStatuses = function (data) {
-            return _.keys(_.groupBy(data,
-                                    function (d) {
-                                        return d.case_status;
-                                    }));
-        };
-
-        console.log(getStatuses(this.props.data));
-
         return (
             <div>
                 <ControlRow data={this.props.data}
@@ -334,15 +337,16 @@ var Controls = React.createClass({
 });
 
 var ControlRow = React.createClass({
-    makePick: function (picked) {
+    makePick: function (picked, newState) {
         var togglesOn = this.state.togglesOn;
 
         togglesOn = _.mapValues(togglesOn,
                               function (value, key) {
-                                  return key == picked;
+                                  return newState && key == picked;
                               });
 
-        this.props.updateDataFilter(picked);
+        // if newState is false, we want to reset
+        this.props.updateDataFilter(picked, !newState);
 
         this.setState({togglesOn: togglesOn});
     },
@@ -380,8 +384,9 @@ var Toggle = React.createClass({
     },
 
     handleClick: function (event) {
-        this.setState({on: !this.state.on});
-        this.props.onClick(this.props.value);
+        var newState = !this.state.on;
+        this.setState({on: newState});
+        this.props.onClick(this.props.value, newState);
     },
 
     componentWillReceiveProps: function (newProps) {
