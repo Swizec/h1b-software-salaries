@@ -39335,7 +39335,9 @@ var H1BGraph = React.createClass({displayName: "H1BGraph",
 
     render: function () {
         if (!this.state.rawData.length) {
-            return false;
+            return (
+                React.createElement("h2", null, "Loading data about 81,000 H1B visas in the software industry")
+            );
         }
 
         var params = {
