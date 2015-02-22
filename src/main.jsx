@@ -85,25 +85,27 @@ var H1BGraph = React.createClass({
             height: 500,
             axisMargin: 83,
             topMargin: 10,
-            bottomMargin: 5
-        };
+            bottomMargin: 5,
+            value: function (d) { return d.base_salary; }
+        },
+            fullWidth = 700;
 
-        var filteredData = this.state.rawData
-                               .filter(function (d) {
-                                   return d.case_status == "certified";
-                               })
-                               .filter(this.state.dataFilter);
+        var onlyGoodVisas = this.state.rawData.filter(function (d) {
+            return d.case_status == "certified";
+        }),
+            filteredData = onlyGoodVisas.filter(this.state.dataFilter);
 
         return (
             <div>
                 <div className="row">
                     <div className="col-md-12">
-                        <svg width={params.width} height={params.height}>
+                        <svg width={fullWidth} height={params.height}>
                             <Histogram {...params} data={filteredData} />
+                            <Mean {...params} data={filteredData} width={fullWidth} />
                         </svg>
                     </div>
                 </div>
-                <Controls data={this.state.rawData} updateDataFilter={this.updateDataFilter} />
+                <Controls data={onlyGoodVisas} updateDataFilter={this.updateDataFilter} />
             </div>
         );
     }
@@ -117,8 +119,7 @@ var Histogram = React.createClass({
     },
 
     componentWillMount: function () {
-        this.histogram = d3.layout.histogram()
-                           .value(function (d) { return d.base_salary; });
+        this.histogram = d3.layout.histogram();
         this.widthScale = d3.scale.log();
         this.yScale = d3.scale.linear();
 
@@ -130,7 +131,9 @@ var Histogram = React.createClass({
     },
 
     update_d3: function (props) {
-        this.histogram.bins(props.bins);
+        this.histogram
+            .bins(props.bins)
+            .value(this.props.value);
 
         var bars = this.histogram(props.data)
                        .reduce(this.mergeSmall, []),
@@ -257,6 +260,44 @@ var Axis = React.createClass({
         var translate = "translate("+(this.props.axisMargin-3)+", 0)";
         return (
             <g className="axis" transform={translate}>
+            </g>
+        );
+    }
+});
+
+var Mean = React.createClass({
+    componentWillMount: function () {
+        this.yScale = d3.scale.linear();
+
+        this.update_d3(this.props);
+    },
+
+    componentWillReceiveProps: function (newProps) {
+        this.update_d3(newProps);
+    },
+
+    update_d3: function (props) {
+        this.yScale
+            .domain([0,
+                     d3.max(props.data.map(this.props.value))])
+            .range([0, props.height-props.topMargin-props.bottomMargin]);
+    },
+
+    render: function () {
+        var mean = d3.mean(this.props.data, this.props.value),
+            line = d3.svg.line()
+            ([[0, 5],
+              [this.props.width, 5]]);
+
+        var translate = "translate(0, "+this.yScale(mean)+")",
+            meanLabel = "Mean: $"+this.yScale.tickFormat()(mean);
+
+        return (
+            <g className="mean" transform={translate}>
+                <text x={this.props.width-5} y="0" textAnchor="end">
+                    {meanLabel}
+                </text>
+                <path d={line}></path>
             </g>
         );
     }
