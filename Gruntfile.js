@@ -16,19 +16,6 @@ module.exports = function (grunt) {
             }
         },
 
-        react: {
-            jsx: {
-                files: [
-                    {expand: true,
-                     cwd: 'src',
-                     src: ['**/*.jsx'],
-                     dest: 'build',
-                     ext: '.js'
-                    }
-                ]
-            }
-        },
-
         browserify: {
             options: {
                 transform: ['reactify', 'debowerify']
@@ -41,6 +28,9 @@ module.exports = function (grunt) {
                 dest: 'build/bundle.js'
             },
             production: {
+                options: {
+                    debug: false
+                },
                 src: '<%= browserify.dev.src %>',
                 dest: 'build/bundle.js'
             }
@@ -55,16 +45,16 @@ module.exports = function (grunt) {
                 }
             },
 
-            react: {
+            browserify: {
                 files: 'src/*.jsx',
-                tasks: ['react']
+                tasks: ['browserify:dev']
             }
         }
     });
 
     grunt.loadNpmTasks('grunt-contrib-watch');
-    grunt.loadNpmTasks('grunt-react');
     grunt.loadNpmTasks('grunt-browserify');
 
     grunt.registerTask('default', ['less', 'browserify:dev', 'watch']);
+    grunt.registerTask('package', ['less', 'browserify:production']);
 };

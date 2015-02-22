@@ -193,3 +193,9 @@ var Mean = React.createClass({
         );
     }
 });
+
+
+module.exports = {
+    Histogram: Histogram,
+    Mean: Mean
+};

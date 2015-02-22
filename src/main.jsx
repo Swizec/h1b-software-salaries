@@ -1,10 +1,9 @@
 
 var React = require('react'),
     _ = require('lodash'),
-    d3 = require('d3');
-
-require('./drawers');
-require('./controls');
+    d3 = require('d3'),
+    drawers = require('./drawers.jsx'),
+    Controls = require('./controls.jsx');
 
 var H1BGraph = React.createClass({
     cleanJobs: function (title) {
@@ -107,8 +106,8 @@ var H1BGraph = React.createClass({
                 <div className="row">
                     <div className="col-md-12">
                         <svg width={fullWidth} height={params.height}>
-                            <Histogram {...params} data={filteredData} />
-                            <Mean {...params} data={filteredData} width={fullWidth} />
+                            <drawers.Histogram {...params} data={filteredData} />
+                            <drawers.Mean {...params} data={filteredData} width={fullWidth} />
                         </svg>
                     </div>
                 </div>

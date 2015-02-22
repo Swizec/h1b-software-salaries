@@ -147,3 +147,5 @@ var Toggle = React.createClass({
         );
     }
 });
+
+module.exports = Controls;
