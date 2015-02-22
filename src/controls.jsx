@@ -105,9 +105,11 @@ var ControlRow = React.createClass({
             <div className="row">
                 <div className="col-md-12">
             {this.props.getToggleValues(this.props.data).map(function (value) {
+                var key = "toggle-"+value;
                 return (
                     <Toggle label={value}
                             value={value}
+                            key={key}
                             on={this.state.togglesOn[value]}
                             onClick={this.makePick} />
                 );

@@ -65,7 +65,8 @@ var Histogram = React.createClass({
                      x: this.props.axisMargin,
                      y: this.yScale(bar.x),
                      width: this.widthScale(bar.y),
-                     height: this.yScale(bar.dx)}
+                     height: this.yScale(bar.dx),
+                     key: "histogram-bar-"+bar.x+"-"+bar.y}
 
         return (
             <HistogramBar {...props} />

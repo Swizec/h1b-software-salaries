@@ -38955,9 +38955,11 @@ var ControlRow = React.createClass({displayName: "ControlRow",
             React.createElement("div", {className: "row"}, 
                 React.createElement("div", {className: "col-md-12"}, 
             this.props.getToggleValues(this.props.data).map(function (value) {
+                var key = "toggle-"+value;
                 return (
                     React.createElement(Toggle, {label: value, 
                             value: value, 
+                            key: key, 
                             on: this.state.togglesOn[value], 
                             onClick: this.makePick})
                 );
@@ -39069,7 +39071,8 @@ var Histogram = React.createClass({displayName: "Histogram",
                      x: this.props.axisMargin,
                      y: this.yScale(bar.x),
                      width: this.widthScale(bar.y),
-                     height: this.yScale(bar.dx)}
+                     height: this.yScale(bar.dx),
+                     key: "histogram-bar-"+bar.x+"-"+bar.y}
 
         return (
             React.createElement(HistogramBar, React.__spread({},  props))
