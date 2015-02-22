@@ -11,7 +11,7 @@ var Histogram = React.createClass({
 
     componentWillMount: function () {
         this.histogram = d3.layout.histogram();
-        this.widthScale = d3.scale.log();
+        this.widthScale = d3.scale.linear();
         this.yScale = d3.scale.linear();
 
         this.update_d3(this.props);
@@ -42,12 +42,12 @@ var Histogram = React.createClass({
     },
 
     mergeSmall: function (mem, d) {
-        if (d.y > 3 || !mem.length) {
+        //if (d.y/this.props.data.length > 0.01  || !mem.length) {
             mem.push(d);
-        }else{
-            mem[mem.length-1].dx += d.dx;
-            mem[mem.length-1].y += d.y;
-        }
+        //}else{
+        //    mem[mem.length-1].dx += d.dx;
+        //    mem[mem.length-1].y += d.y;
+        //}
 
         return mem;
     },
@@ -55,18 +55,14 @@ var Histogram = React.createClass({
     makeBar: function (bar) {
         var percent = bar.y/this.props.data.length*100;
 
-        if (percent < 1) {
-            percent = percent.toFixed(2);
-        }else{
-            percent = percent.toFixed(0);
-        }
-
-        var props = {label: percent+"%",
+        var props = {percent: percent,
                      x: this.props.axisMargin,
                      y: this.yScale(bar.x),
                      width: this.widthScale(bar.y),
                      height: this.yScale(bar.dx),
                      key: "histogram-bar-"+bar.x+"-"+bar.y}
+
+        console.log(props);
 
         return (
             <HistogramBar {...props} />
@@ -89,7 +85,20 @@ var Histogram = React.createClass({
 
 var HistogramBar = React.createClass({
     render: function () {
-        var translate = "translate(" + this.props.x + "," + this.props.y + ")";
+        var translate = "translate(" + this.props.x + "," + this.props.y + ")",
+            label = this.props.percent.toFixed(0)+'%';
+
+        if (this.props.percent < 1) {
+            label = this.props.percent.toFixed(2)+"%";
+        }
+
+        if (this.props.width < 20) {
+            label = label.replace("%", "");
+        }
+
+        if (this.props.width < 10) {
+            label = "";
+        }
 
         return (
             <g transform={translate} className="bar">
@@ -100,7 +109,7 @@ var HistogramBar = React.createClass({
                 <text textAnchor="end"
                       x={this.props.width-5}
                       y={this.props.height/2+3}>
-                    {this.props.label}
+                    {label}
                 </text>
             </g>
         );

@@ -97,7 +97,7 @@ var H1BGraph = React.createClass({
         }
 
         var params = {
-            bins: 30,
+            bins: 20,
             width: 500,
             height: 500,
             axisMargin: 83,
