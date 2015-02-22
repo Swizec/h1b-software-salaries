@@ -29,6 +29,23 @@ module.exports = function (grunt) {
             }
         },
 
+        browserify: {
+            options: {
+                transform: ['reactify', 'debowerify']
+            },
+            dev: {
+                options: {
+                    debug: true
+                },
+                src: 'src/main.jsx',
+                dest: 'build/bundle.js'
+            },
+            production: {
+                src: '<%= browserify.dev.src %>',
+                dest: 'build/bundle.js'
+            }
+        },
+
         watch: {
             styles: {
                 files: ['src/*.less'],
@@ -47,6 +64,7 @@ module.exports = function (grunt) {
 
     grunt.loadNpmTasks('grunt-contrib-watch');
     grunt.loadNpmTasks('grunt-react');
+    grunt.loadNpmTasks('grunt-browserify');
 
-    grunt.registerTask('default', ['less', 'react', 'watch']);
+    grunt.registerTask('default', ['less', 'browserify:dev', 'watch']);
 };
