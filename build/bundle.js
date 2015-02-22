@@ -38877,16 +38877,31 @@ var Controls = React.createClass({displayName: "Controls",
         this.setState({jobTitleFilter: filter});
     },
 
+    updateStateFilter: function (state, reset) {
+        var filter = function (d) {
+            return d.state == state;
+        };
+
+        if (reset) {
+            filter = function () { return true; };
+        }
+
+        this.setState({stateFilter: filter});
+    },
+
     getInitialState: function () {
         return {yearFilter: function () { return true; },
-                jobTitleFilter: function () { return true; }};
+                jobTitleFilter: function () { return true; },
+                stateFilter: function () { return true; }};
     },
 
     componentDidUpdate: function () {
         this.props.updateDataFilter(
             (function (filters) {
                 return function (d) {
-                    return filters.yearFilter(d) && filters.jobTitleFilter(d);
+                    return filters.yearFilter(d)
+                        && filters.jobTitleFilter(d)
+                        && filters.stateFilter(d);
                 };
             })(this.state)
         );
@@ -38912,6 +38927,13 @@ var Controls = React.createClass({displayName: "Controls",
                                     }));
         };
 
+        var getStates = function (data) {
+            return _.sortBy(_.keys(_.groupBy(data,
+                                    function (d) {
+                                        return d.state;
+                                    })));
+        };
+
         return (
             React.createElement("div", null, 
                 React.createElement(ControlRow, {data: this.props.data, 
@@ -38920,7 +38942,12 @@ var Controls = React.createClass({displayName: "Controls",
 
                 React.createElement(ControlRow, {data: this.props.data, 
                             getToggleValues: getJobTitles, 
-                            updateDataFilter: this.updateJobTitleFilter})
+                            updateDataFilter: this.updateJobTitleFilter}), 
+
+                React.createElement(ControlRow, {data: this.props.data, 
+                            getToggleValues: getStates, 
+                            updateDataFilter: this.updateStateFilter, 
+                            capitalize: "true"})
             )
         )
     }
@@ -38955,9 +38982,15 @@ var ControlRow = React.createClass({displayName: "ControlRow",
             React.createElement("div", {className: "row"}, 
                 React.createElement("div", {className: "col-md-12"}, 
             this.props.getToggleValues(this.props.data).map(function (value) {
-                var key = "toggle-"+value;
+                var key = "toggle-"+value,
+                    label = value;
+
+                if (this.props.capitalize) {
+                    label = label.toUpperCase();
+                }
+
                 return (
-                    React.createElement(Toggle, {label: value, 
+                    React.createElement(Toggle, {label: label, 
                             value: value, 
                             key: key, 
                             on: this.state.togglesOn[value], 
@@ -39214,7 +39247,16 @@ var React = require("./../bower_components/react/react.js"),
     _ = require("./../bower_components/lodash/lodash.js"),
     d3 = require("./../bower_components/d3/d3.js"),
     drawers = require('./drawers.jsx'),
-    Controls = require('./controls.jsx');
+    Controls = require('./controls.jsx'),
+    States = require('./states.js');
+
+String.prototype.capitalize = function() {
+    return this.charAt(0).toUpperCase() + this.slice(1);
+}
+
+String.prototype.decapitalize = function () {
+    return this.charAt(0).toLowerCase() + this.slice(1);
+}
 
 var H1BGraph = React.createClass({displayName: "H1BGraph",
     cleanJobs: function (title) {
@@ -39340,6 +39382,10 @@ var Title = React.createClass({displayName: "Title",
             jobTitles = _.keys(
                 _.groupBy(this.props.data,
                           function (d) { return d.clean_job_title; })
+            ),
+            states = _.keys(
+                _.groupBy(this.props.data,
+                          function (d) { return d.state; })
             );
 
         var format = d3.scale.linear()
@@ -39347,7 +39393,9 @@ var Title = React.createClass({displayName: "Title",
                                          function (d) { return d.base_salary; }))
                        .tickFormat(),
             yearsTitle,
-            jobTitle;
+            jobTitle,
+            stateTitle,
+            title;
 
         if (years.length > 1) {
             yearsTitle = "";
@@ -39359,15 +39407,29 @@ var Title = React.createClass({displayName: "Title",
             jobTitle = "H1B workers in the software industry";
         }else{
             if (jobTitles[0] == "other") {
-                jobTitle = "H1B workers in the software industry";
+                jobTitle = "Other H1B workers in the software industry";
             }else{
                 jobTitle = "Software "+jobTitles[0]+"s on an H1B";
             }
         }
 
-        return (
-            React.createElement("h3", null, jobTitle, " ", yearsTitle.length ? "made" : "make", " $", format(mean), "/year ", yearsTitle)
-        );
+        if (states.length > 1) {
+            stateTitle = "";
+        }else{
+            stateTitle = "in "+States[states[0].toUpperCase()];
+        }
+
+        if (yearsTitle && stateTitle) {
+            title = (
+                React.createElement("h3", null, stateTitle.capitalize(), ", ", jobTitle.match(/^H1B/) ? jobTitle : jobTitle.decapitalize(), " ", yearsTitle.length ? "made" : "make", " $", format(mean), "/year ", yearsTitle)
+            );
+        }else{
+            title = (
+                React.createElement("h3", null, jobTitle, " ", yearsTitle.length ? "made" : "make", " $", format(mean), "/year ", stateTitle, " ", yearsTitle)
+            );
+        }
+
+        return title;
     }
 });
 
@@ -39378,4 +39440,69 @@ React.render(
 );
 
 
-},{"./../bower_components/d3/d3.js":1,"./../bower_components/lodash/lodash.js":2,"./../bower_components/react/react.js":3,"./controls.jsx":4,"./drawers.jsx":5}]},{},[6]);
+},{"./../bower_components/d3/d3.js":1,"./../bower_components/lodash/lodash.js":2,"./../bower_components/react/react.js":3,"./controls.jsx":4,"./drawers.jsx":5,"./states.js":7}],7:[function(require,module,exports){
+
+module.exports = {
+    "AL": "Alabama",
+    "AK": "Alaska",
+    "AS": "American Samoa",
+    "AZ": "Arizona",
+    "AR": "Arkansas",
+    "CA": "California",
+    "CO": "Colorado",
+    "CT": "Connecticut",
+    "DE": "Delaware",
+    "DC": "District Of Columbia",
+    "FM": "Federated States Of Micronesia",
+    "FL": "Florida",
+    "GA": "Georgia",
+    "GU": "Guam",
+    "HI": "Hawaii",
+    "ID": "Idaho",
+    "IL": "Illinois",
+    "IN": "Indiana",
+    "IA": "Iowa",
+    "KS": "Kansas",
+    "KY": "Kentucky",
+    "LA": "Louisiana",
+    "ME": "Maine",
+    "MH": "Marshall Islands",
+    "MD": "Maryland",
+    "MA": "Massachusetts",
+    "MI": "Michigan",
+    "MN": "Minnesota",
+    "MS": "Mississippi",
+    "MO": "Missouri",
+    "MT": "Montana",
+    "NE": "Nebraska",
+    "NV": "Nevada",
+    "NH": "New Hampshire",
+    "NJ": "New Jersey",
+    "NM": "New Mexico",
+    "NY": "New York",
+    "NC": "North Carolina",
+    "ND": "North Dakota",
+    "MP": "Northern Mariana Islands",
+    "OH": "Ohio",
+    "OK": "Oklahoma",
+    "OR": "Oregon",
+    "PW": "Palau",
+    "PA": "Pennsylvania",
+    "PR": "Puerto Rico",
+    "RI": "Rhode Island",
+    "SC": "South Carolina",
+    "SD": "South Dakota",
+    "TN": "Tennessee",
+    "TX": "Texas",
+    "UT": "Utah",
+    "VT": "Vermont",
+    "VI": "Virgin Islands",
+    "VA": "Virginia",
+    "WA": "Washington",
+    "WV": "West Virginia",
+    "WI": "Wisconsin",
+    "WY": "Wyoming"
+};
+
+
+},{}]},{},[6]);

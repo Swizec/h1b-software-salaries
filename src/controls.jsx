@@ -27,16 +27,31 @@ var Controls = React.createClass({
         this.setState({jobTitleFilter: filter});
     },
 
+    updateStateFilter: function (state, reset) {
+        var filter = function (d) {
+            return d.state == state;
+        };
+
+        if (reset) {
+            filter = function () { return true; };
+        }
+
+        this.setState({stateFilter: filter});
+    },
+
     getInitialState: function () {
         return {yearFilter: function () { return true; },
-                jobTitleFilter: function () { return true; }};
+                jobTitleFilter: function () { return true; },
+                stateFilter: function () { return true; }};
     },
 
     componentDidUpdate: function () {
         this.props.updateDataFilter(
             (function (filters) {
                 return function (d) {
-                    return filters.yearFilter(d) && filters.jobTitleFilter(d);
+                    return filters.yearFilter(d)
+                        && filters.jobTitleFilter(d)
+                        && filters.stateFilter(d);
                 };
             })(this.state)
         );
@@ -62,6 +77,13 @@ var Controls = React.createClass({
                                     }));
         };
 
+        var getStates = function (data) {
+            return _.sortBy(_.keys(_.groupBy(data,
+                                    function (d) {
+                                        return d.state;
+                                    })));
+        };
+
         return (
             <div>
                 <ControlRow data={this.props.data}
@@ -71,6 +93,11 @@ var Controls = React.createClass({
                 <ControlRow data={this.props.data}
                             getToggleValues={getJobTitles}
                             updateDataFilter={this.updateJobTitleFilter} />
+
+                <ControlRow data={this.props.data}
+                            getToggleValues={getStates}
+                            updateDataFilter={this.updateStateFilter}
+                            capitalize="true" />
             </div>
         )
     }
@@ -105,9 +132,15 @@ var ControlRow = React.createClass({
             <div className="row">
                 <div className="col-md-12">
             {this.props.getToggleValues(this.props.data).map(function (value) {
-                var key = "toggle-"+value;
+                var key = "toggle-"+value,
+                    label = value;
+
+                if (this.props.capitalize) {
+                    label = label.toUpperCase();
+                }
+
                 return (
-                    <Toggle label={value}
+                    <Toggle label={label}
                             value={value}
                             key={key}
                             on={this.state.togglesOn[value]}

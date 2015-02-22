@@ -3,7 +3,16 @@ var React = require('react'),
     _ = require('lodash'),
     d3 = require('d3'),
     drawers = require('./drawers.jsx'),
-    Controls = require('./controls.jsx');
+    Controls = require('./controls.jsx'),
+    States = require('./states.js');
+
+String.prototype.capitalize = function() {
+    return this.charAt(0).toUpperCase() + this.slice(1);
+}
+
+String.prototype.decapitalize = function () {
+    return this.charAt(0).toLowerCase() + this.slice(1);
+}
 
 var H1BGraph = React.createClass({
     cleanJobs: function (title) {
@@ -129,6 +138,10 @@ var Title = React.createClass({
             jobTitles = _.keys(
                 _.groupBy(this.props.data,
                           function (d) { return d.clean_job_title; })
+            ),
+            states = _.keys(
+                _.groupBy(this.props.data,
+                          function (d) { return d.state; })
             );
 
         var format = d3.scale.linear()
@@ -136,7 +149,9 @@ var Title = React.createClass({
                                          function (d) { return d.base_salary; }))
                        .tickFormat(),
             yearsTitle,
-            jobTitle;
+            jobTitle,
+            stateTitle,
+            title;
 
         if (years.length > 1) {
             yearsTitle = "";
@@ -148,15 +163,29 @@ var Title = React.createClass({
             jobTitle = "H1B workers in the software industry";
         }else{
             if (jobTitles[0] == "other") {
-                jobTitle = "H1B workers in the software industry";
+                jobTitle = "Other H1B workers in the software industry";
             }else{
                 jobTitle = "Software "+jobTitles[0]+"s on an H1B";
             }
         }
 
-        return (
-            <h3>{jobTitle} {yearsTitle.length ? "made" : "make"} ${format(mean)}/year {yearsTitle}</h3>
-        );
+        if (states.length > 1) {
+            stateTitle = "";
+        }else{
+            stateTitle = "in "+States[states[0].toUpperCase()];
+        }
+
+        if (yearsTitle && stateTitle) {
+            title = (
+                <h3>{stateTitle.capitalize()}, {jobTitle.match(/^H1B/) ? jobTitle : jobTitle.decapitalize()} {yearsTitle.length ? "made" : "make"} ${format(mean)}/year {yearsTitle}</h3>
+            );
+        }else{
+            title = (
+                <h3>{jobTitle} {yearsTitle.length ? "made" : "make"} ${format(mean)}/year {stateTitle} {yearsTitle}</h3>
+            );
+        }
+
+        return title;
     }
 });
 
