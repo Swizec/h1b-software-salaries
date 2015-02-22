@@ -345,6 +345,38 @@ var Description = React.createClass({
         return fragment;
     },
 
+    getCityFragment: function () {
+        var byCity = _.groupBy(this.props.data, "city"),
+
+            ordered = _.sortBy(_.keys(byCity)
+                                .map(function (city) {
+                                    return byCity[city];
+                                })
+                                .filter(function (d) {
+                                    return d.length/this.props.data.length > 0.01;
+                                }.bind(this)),
+                               function (d) {
+                                   return d3.mean(_.pluck(d, 'base_salary'));
+                               }),
+            best = ordered[ordered.length-1],
+            mean = d3.mean(_.pluck(best, 'base_salary'));
+
+        var city = best[0].city
+                          .split(" ")
+                          .map(function (w) { return w.capitalize() })
+                          .join(" ");
+
+        var jobFragment = this.getJobTitleFragment()
+                              .replace("foreign nationals", "")
+                              .replace("foreign", "");
+
+        return (
+            <span>
+                The best city {jobFragment.length ? "for "+jobFragment : "to be in"} {this.getYearFragment().length ? "was" : "is"} {city} with an average salary of ${this.getFormatter()(mean)}.
+            </span>
+        );
+    },
+
     render: function () {
         var formatter = this.getFormatter(),
             mean = d3.mean(this.props.data,
@@ -355,7 +387,7 @@ var Description = React.createClass({
         var yearFragment = this.getYearFragment();
 
         return (
-            <p className="lead">{yearFragment.length ? yearFragment : "Since 2012"} the {this.getStateFragment()} software industry {yearFragment.length ? "gave" : "has given"} jobs to {formatter(this.props.data.length)} {this.getJobTitleFragment()}{this.getPreviousYearFragment()}. Most of them made between ${formatter(mean-deviation)} and ${formatter(mean+deviation)} per year.</p>
+            <p className="lead">{yearFragment.length ? yearFragment : "Since 2012"} the {this.getStateFragment()} software industry {yearFragment.length ? "gave" : "has given"} jobs to {formatter(this.props.data.length)} {this.getJobTitleFragment()}{this.getPreviousYearFragment()}. Most of them made between ${formatter(mean-deviation)} and ${formatter(mean+deviation)} per year. {this.getCityFragment()}</p>
         );
     }
 });
