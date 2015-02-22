@@ -39357,6 +39357,7 @@ var H1BGraph = React.createClass({displayName: "H1BGraph",
         return (
             React.createElement("div", null, 
                 React.createElement(Title, {data: filteredData}), 
+
                 React.createElement("div", {className: "row"}, 
                     React.createElement("div", {className: "col-md-12"}, 
                         React.createElement("svg", {width: fullWidth, height: params.height}, 
@@ -39371,61 +39372,102 @@ var H1BGraph = React.createClass({displayName: "H1BGraph",
     }
 });
 
-var Title = React.createClass({displayName: "Title",
-    render: function () {
-        var mean = d3.mean(this.props.data,
-                           function (d) { return d.base_salary; }),
-            years = _.keys(
-                _.groupBy(this.props.data,
-                          function (d) { return d.submit_date.getFullYear(); })
-            ),
-            jobTitles = _.keys(
-                _.groupBy(this.props.data,
-                          function (d) { return d.clean_job_title; })
-            ),
-            states = _.keys(
-                _.groupBy(this.props.data,
-                          function (d) { return d.state; })
-            );
+var MetaMixin = {
+    getYears: function () {
+        return _.keys(
+            _.groupBy(this.props.data,
+                      function (d) { return d.submit_date.getFullYear(); })
+        );
+    },
 
-        var format = d3.scale.linear()
-                       .domain(d3.extent(this.props.data,
-                                         function (d) { return d.base_salary; }))
-                       .tickFormat(),
-            yearsTitle,
-            jobTitle,
-            stateTitle,
+    getStates: function () {
+        return _.keys(
+            _.groupBy(this.props.data,
+                      function (d) { return d.state; })
+        );
+    },
+
+    getJobTitles: function () {
+        return _.keys(
+            _.groupBy(this.props.data,
+                      function (d) { return d.clean_job_title; })
+        );
+    },
+
+    getFormatter: function () {
+        return d3.scale.linear()
+                 .domain(d3.extent(this.props.data,
+                                   function (d) { return d.base_salary; }))
+                 .tickFormat();
+    }
+};
+
+var Title = React.createClass({displayName: "Title",
+    mixins: [MetaMixin],
+
+    getYearsFragment: function () {
+        var years = this.getYears(),
             title;
 
+
         if (years.length > 1) {
-            yearsTitle = "";
+            title = "";
         }else{
-            yearsTitle = "in "+years[0];
+            title = "in "+years[0];
         }
 
+        return title;
+    },
+
+    getStateFragment: function () {
+        var states = this.getStates(),
+            title;
+
+
+        if (states.length > 1) {
+            title = "";
+        }else{
+            title = "in "+States[states[0].toUpperCase()];
+        }
+
+        return title;
+    },
+
+    getJobTitleFragment: function () {
+        var jobTitles = this.getJobTitles(),
+            title;
+
         if (jobTitles.length > 1) {
-            jobTitle = "H1B workers in the software industry";
+            title = "H1B workers in the software industry";
         }else{
             if (jobTitles[0] == "other") {
-                jobTitle = "Other H1B workers in the software industry";
+                title = "Other H1B workers in the software industry";
             }else{
-                jobTitle = "Software "+jobTitles[0]+"s on an H1B";
+                title = "Software "+jobTitles[0]+"s on an H1B";
             }
         }
 
-        if (states.length > 1) {
-            stateTitle = "";
-        }else{
-            stateTitle = "in "+States[states[0].toUpperCase()];
-        }
+        return title;
+    },
 
-        if (yearsTitle && stateTitle) {
+    render: function () {
+        var mean = d3.mean(this.props.data,
+                           function (d) { return d.base_salary; }),
+            format = this.getFormatter();
+
+        var
+            yearsFragment = this.getYearsFragment(),
+            jobTitleFragment = this.getJobTitleFragment(),
+            stateFragment = this.getStateFragment(),
+            title;
+
+        if (yearsFragment && stateFragment) {
             title = (
-                React.createElement("h3", null, stateTitle.capitalize(), ", ", jobTitle.match(/^H1B/) ? jobTitle : jobTitle.decapitalize(), " ", yearsTitle.length ? "made" : "make", " $", format(mean), "/year ", yearsTitle)
+                React.createElement("h3", null, stateFragment.capitalize(), ", ", jobTitleFragment.match(/^H1B/) ? jobTitleFragment : jobTitleFragment.decapitalize(), " ", yearsFragment.length ? "made" : "make", " $", format(mean), "/year ", yearsFragment)
             );
         }else{
             title = (
-                React.createElement("h3", null, jobTitle, " ", yearsTitle.length ? "made" : "make", " $", format(mean), "/year ", stateTitle, " ", yearsTitle)
+                React.createElement("h3", null, jobTitleFragment, " ", yearsFragment.length ? "made" : "make", " $", format(mean), "/year ", stateFragment, " ", yearsFragment)
             );
         }
 
