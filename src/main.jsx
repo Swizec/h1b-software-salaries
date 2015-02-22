@@ -103,6 +103,7 @@ var H1BGraph = React.createClass({
 
         return (
             <div>
+                <Title data={filteredData} />
                 <div className="row">
                     <div className="col-md-12">
                         <svg width={fullWidth} height={params.height}>
@@ -113,6 +114,48 @@ var H1BGraph = React.createClass({
                 </div>
                 <Controls data={onlyGoodVisas} updateDataFilter={this.updateDataFilter} />
             </div>
+        );
+    }
+});
+
+var Title = React.createClass({
+    render: function () {
+        var mean = d3.mean(this.props.data,
+                           function (d) { return d.base_salary; }),
+            years = _.keys(
+                _.groupBy(this.props.data,
+                          function (d) { return d.submit_date.getFullYear(); })
+            ),
+            jobTitles = _.keys(
+                _.groupBy(this.props.data,
+                          function (d) { return d.clean_job_title; })
+            );
+
+        var format = d3.scale.linear()
+                       .domain(d3.extent(this.props.data,
+                                         function (d) { return d.base_salary; }))
+                       .tickFormat(),
+            yearsTitle,
+            jobTitle;
+
+        if (years.length > 1) {
+            yearsTitle = "";
+        }else{
+            yearsTitle = "in "+years[0];
+        }
+
+        if (jobTitles.length > 1) {
+            jobTitle = "H1B workers in the software industry";
+        }else{
+            if (jobTitles[0] == "other") {
+                jobTitle = "H1B workers in the software industry";
+            }else{
+                jobTitle = "Software "+jobTitles[0]+"s on an H1B";
+            }
+        }
+
+        return (
+            <h3>{jobTitle} {yearsTitle.length ? "made" : "make"} ${format(mean)}/year {yearsTitle}</h3>
         );
     }
 });
