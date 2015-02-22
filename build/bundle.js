@@ -39554,7 +39554,8 @@ var Description = React.createClass({displayName: "Description",
                 fragment = ", "+(this.props.data.length/lastYear.length).toFixed()+" times more than the year before";
             }else{
                 var percent = ((1-lastYear.length/this.props.data.length)*100).toFixed();
-                fragment = ", "+percent+"% more than the year before";
+
+                fragment = ", "+Math.abs(percent)+"% "+(percent > 0 ? "more" : "less")+" than the year before";
             }
         }
 
