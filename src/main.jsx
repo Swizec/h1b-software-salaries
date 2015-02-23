@@ -398,5 +398,5 @@ var Description = React.createClass({
 
 React.render(
     <H1BGraph url="data/h1bs.csv" />,
-    document.querySelectorAll('.container')[0]
+    document.querySelectorAll('.h1bgraph')[0]
 );

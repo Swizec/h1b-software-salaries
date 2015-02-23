@@ -39677,7 +39677,7 @@ var Description = React.createClass({displayName: "Description",
 
 React.render(
     React.createElement(H1BGraph, {url: "data/h1bs.csv"}),
-    document.querySelectorAll('.container')[0]
+    document.querySelectorAll('.h1bgraph')[0]
 );
 
 
