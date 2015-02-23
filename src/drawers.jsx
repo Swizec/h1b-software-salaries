@@ -62,8 +62,6 @@ var Histogram = React.createClass({
                      height: this.yScale(bar.dx),
                      key: "histogram-bar-"+bar.x+"-"+bar.y}
 
-        console.log(props);
-
         return (
             <HistogramBar {...props} />
         );

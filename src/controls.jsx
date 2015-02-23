@@ -10,9 +10,11 @@ var Controls = React.createClass({
 
         if (reset) {
             filter = function () { return true; };
+            year = '*';
         }
 
-        this.setState({yearFilter: filter});
+        this.setState({yearFilter: filter,
+                       year: year});
     },
 
     updateJobTitleFilter: function (title, reset) {
@@ -22,9 +24,11 @@ var Controls = React.createClass({
 
         if (reset) {
             filter = function () { return true; };
+            title = '*';
         }
 
-        this.setState({jobTitleFilter: filter});
+        this.setState({jobTitleFilter: filter,
+                       jobTitle: title});
     },
 
     updateStateFilter: function (state, reset) {
@@ -34,18 +38,27 @@ var Controls = React.createClass({
 
         if (reset) {
             filter = function () { return true; };
+            state = '*';
         }
 
-        this.setState({stateFilter: filter});
+        this.setState({stateFilter: filter,
+                       state: state});
     },
 
     getInitialState: function () {
         return {yearFilter: function () { return true; },
                 jobTitleFilter: function () { return true; },
-                stateFilter: function () { return true; }};
+                stateFilter: function () { return true; },
+                year: '*',
+                state: '*',
+                jobTitle: '*'};
     },
 
     componentDidUpdate: function () {
+        window.location.hash = [this.state.year,
+                                this.state.state,
+                                this.state.jobTitle].join("-");
+
         this.props.updateDataFilter(
             (function (filters) {
                 return function (d) {
@@ -88,14 +101,17 @@ var Controls = React.createClass({
             <div>
                 <ControlRow data={this.props.data}
                             getToggleValues={getYears}
+                            hashPart="0"
                             updateDataFilter={this.updateYearFilter} />
 
                 <ControlRow data={this.props.data}
                             getToggleValues={getJobTitles}
+                            hashPart="2"
                             updateDataFilter={this.updateJobTitleFilter} />
 
                 <ControlRow data={this.props.data}
                             getToggleValues={getStates}
+                            hashPart="1"
                             updateDataFilter={this.updateStateFilter}
                             capitalize="true" />
             </div>
@@ -124,6 +140,18 @@ var ControlRow = React.createClass({
                                     toggles.map(function () { return false; }));
 
         return {togglesOn: togglesOn};
+    },
+
+    componentWillMount: function () {
+        var hash = window.location.hash.replace('#', '').split("-");
+
+        if (hash.length) {
+            var fromUrl = hash[this.props.hashPart];
+
+            if (fromUrl != '*') {
+                this.makePick(fromUrl, true);
+            }
+        }
     },
 
     render: function () {

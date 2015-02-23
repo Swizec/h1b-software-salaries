@@ -38860,9 +38860,11 @@ var Controls = React.createClass({displayName: "Controls",
 
         if (reset) {
             filter = function () { return true; };
+            year = '*';
         }
 
-        this.setState({yearFilter: filter});
+        this.setState({yearFilter: filter,
+                       year: year});
     },
 
     updateJobTitleFilter: function (title, reset) {
@@ -38872,9 +38874,11 @@ var Controls = React.createClass({displayName: "Controls",
 
         if (reset) {
             filter = function () { return true; };
+            title = '*';
         }
 
-        this.setState({jobTitleFilter: filter});
+        this.setState({jobTitleFilter: filter,
+                       jobTitle: title});
     },
 
     updateStateFilter: function (state, reset) {
@@ -38884,18 +38888,27 @@ var Controls = React.createClass({displayName: "Controls",
 
         if (reset) {
             filter = function () { return true; };
+            state = '*';
         }
 
-        this.setState({stateFilter: filter});
+        this.setState({stateFilter: filter,
+                       state: state});
     },
 
     getInitialState: function () {
         return {yearFilter: function () { return true; },
                 jobTitleFilter: function () { return true; },
-                stateFilter: function () { return true; }};
+                stateFilter: function () { return true; },
+                year: '*',
+                state: '*',
+                jobTitle: '*'};
     },
 
     componentDidUpdate: function () {
+        window.location.hash = [this.state.year,
+                                this.state.state,
+                                this.state.jobTitle].join("-");
+
         this.props.updateDataFilter(
             (function (filters) {
                 return function (d) {
@@ -38938,14 +38951,17 @@ var Controls = React.createClass({displayName: "Controls",
             React.createElement("div", null, 
                 React.createElement(ControlRow, {data: this.props.data, 
                             getToggleValues: getYears, 
+                            hashPart: "0", 
                             updateDataFilter: this.updateYearFilter}), 
 
                 React.createElement(ControlRow, {data: this.props.data, 
                             getToggleValues: getJobTitles, 
+                            hashPart: "2", 
                             updateDataFilter: this.updateJobTitleFilter}), 
 
                 React.createElement(ControlRow, {data: this.props.data, 
                             getToggleValues: getStates, 
+                            hashPart: "1", 
                             updateDataFilter: this.updateStateFilter, 
                             capitalize: "true"})
             )
@@ -38974,6 +38990,18 @@ var ControlRow = React.createClass({displayName: "ControlRow",
                                     toggles.map(function () { return false; }));
 
         return {togglesOn: togglesOn};
+    },
+
+    componentWillMount: function () {
+        var hash = window.location.hash.replace('#', '').split("-");
+
+        if (hash.length) {
+            var fromUrl = hash[this.props.hashPart];
+
+            if (fromUrl != '*') {
+                this.makePick(fromUrl, true);
+            }
+        }
     },
 
     render: function () {
@@ -39100,8 +39128,6 @@ var Histogram = React.createClass({displayName: "Histogram",
                      width: this.widthScale(bar.y),
                      height: this.yScale(bar.dx),
                      key: "histogram-bar-"+bar.x+"-"+bar.y}
-
-        console.log(props);
 
         return (
             React.createElement(HistogramBar, React.__spread({},  props))
