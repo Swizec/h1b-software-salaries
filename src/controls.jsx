@@ -8,7 +8,7 @@ var Controls = React.createClass({
             return d.submit_date.getFullYear() == year;
         };
 
-        if (reset) {
+        if (reset || !year) {
             filter = function () { return true; };
             year = '*';
         }
@@ -22,7 +22,7 @@ var Controls = React.createClass({
             return d.clean_job_title == title;
         };
 
-        if (reset) {
+        if (reset || !title) {
             filter = function () { return true; };
             title = '*';
         }
@@ -36,7 +36,7 @@ var Controls = React.createClass({
             return d.state == state;
         };
 
-        if (reset) {
+        if (reset || !state) {
             filter = function () { return true; };
             state = '*';
         }
@@ -55,9 +55,9 @@ var Controls = React.createClass({
     },
 
     componentDidUpdate: function () {
-        window.location.hash = [this.state.year,
-                                this.state.state,
-                                this.state.jobTitle].join("-");
+        window.location.hash = [this.state.year || '*',
+                                this.state.state || '*',
+                                this.state.jobTitle || '*'].join("-");
 
         this.props.updateDataFilter(
             (function (filters) {
@@ -148,8 +148,11 @@ var ControlRow = React.createClass({
         if (hash.length) {
             var fromUrl = hash[this.props.hashPart];
 
-            if (fromUrl != '*') {
+            if (fromUrl != '*' && fromUrl != '') {
                 this.makePick(fromUrl, true);
+            }else{
+                // reset
+                this.props.updateDataFilter('', true);
             }
         }
     },
