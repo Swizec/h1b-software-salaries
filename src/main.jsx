@@ -85,7 +85,7 @@ var H1BGraph = React.createClass({
                 dataFilter: function () { return true; }};
     },
 
-    componentDidMount: function () {
+    componentWillMount: function () {
         this.loadRawData();
     },
 
