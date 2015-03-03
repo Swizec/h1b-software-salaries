@@ -74,8 +74,8 @@ var Histogram = React.createClass({
             <g className="histogram" transform={translate}>
                 <g className="bars">
                     {this.state.bars.map(this.makeBar)}
-                    <Axis {...this.props} data={this.state.bars}  />
                 </g>
+                <Axis {...this.props} data={this.state.bars}  />
             </g>
         );
     }

@@ -39143,9 +39143,9 @@ var Histogram = React.createClass({displayName: "Histogram",
         return (
             React.createElement("g", {className: "histogram", transform: translate}, 
                 React.createElement("g", {className: "bars"}, 
-                    this.state.bars.map(this.makeBar), 
-                    React.createElement(Axis, React.__spread({},  this.props, {data: this.state.bars}))
-                )
+                    this.state.bars.map(this.makeBar)
+                ), 
+                React.createElement(Axis, React.__spread({},  this.props, {data: this.state.bars}))
             )
         );
     }
@@ -39367,7 +39367,7 @@ var H1BGraph = React.createClass({displayName: "H1BGraph",
                 dataFilter: function () { return true; }};
     },
 
-    componentDidMount: function () {
+    componentWillMount: function () {
         this.loadRawData();
     },
 
