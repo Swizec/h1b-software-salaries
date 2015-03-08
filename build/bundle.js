@@ -39040,9 +39040,9 @@ var Toggle = React.createClass({displayName: "Toggle",
     },
 
     handleClick: function (event) {
-        var newState = !this.state.on;
-        this.setState({on: newState});
-        this.props.onClick(this.props.value, newState);
+       var newState = !this.state.on;
+       this.setState({on: newState});
+       this.props.onClick(this.props.value, newState);
     },
 
     componentWillReceiveProps: function (newProps) {
@@ -39286,7 +39286,7 @@ var React = require("./../bower_components/react/react.js"),
     d3 = require("./../bower_components/d3/d3.js"),
     drawers = require('./drawers.jsx'),
     Controls = require('./controls.jsx'),
-    States = require('./states.js');
+    meta = require('./meta.jsx');
 
 String.prototype.capitalize = function() {
     return this.charAt(0).toUpperCase() + this.slice(1);
@@ -39396,8 +39396,8 @@ var H1BGraph = React.createClass({displayName: "H1BGraph",
 
         return (
             React.createElement("div", null, 
-                React.createElement(Title, {data: filteredData}), 
-                React.createElement(Description, {data: filteredData, allData: onlyGoodVisas}), 
+                React.createElement(meta.Title, {data: filteredData}), 
+                React.createElement(meta.Description, {data: filteredData, allData: onlyGoodVisas}), 
                 React.createElement("div", {className: "row"}, 
                     React.createElement("div", {className: "col-md-12"}, 
                         React.createElement("svg", {width: fullWidth, height: params.height}, 
@@ -39411,6 +39411,19 @@ var H1BGraph = React.createClass({displayName: "H1BGraph",
         );
     }
 });
+
+React.render(
+    React.createElement(H1BGraph, {url: "data/h1bs.csv"}),
+    document.querySelectorAll('.h1bgraph')[0]
+);
+
+
+},{"./../bower_components/d3/d3.js":1,"./../bower_components/lodash/lodash.js":2,"./../bower_components/react/react.js":3,"./controls.jsx":4,"./drawers.jsx":5,"./meta.jsx":7}],7:[function(require,module,exports){
+
+var React = require("./../bower_components/react/react.js"),
+    d3 = require("./../bower_components/d3/d3.js"),
+    _ = require("./../bower_components/lodash/lodash.js"),
+    States = require('./states.js');
 
 var MetaMixin = {
     getYears: function (data) {
@@ -39449,6 +39462,7 @@ var MetaMixin = {
                  .tickFormat();
     }
 };
+
 
 var Title = React.createClass({displayName: "Title",
     mixins: [MetaMixin],
@@ -39677,14 +39691,13 @@ var Description = React.createClass({displayName: "Description",
     }
 });
 
+module.exports = {
+    Title: Title,
+    Description: Description
+}
 
-React.render(
-    React.createElement(H1BGraph, {url: "data/h1bs.csv"}),
-    document.querySelectorAll('.h1bgraph')[0]
-);
 
-
-},{"./../bower_components/d3/d3.js":1,"./../bower_components/lodash/lodash.js":2,"./../bower_components/react/react.js":3,"./controls.jsx":4,"./drawers.jsx":5,"./states.js":7}],7:[function(require,module,exports){
+},{"./../bower_components/d3/d3.js":1,"./../bower_components/lodash/lodash.js":2,"./../bower_components/react/react.js":3,"./states.js":8}],8:[function(require,module,exports){
 
 module.exports = {
     "AL": "Alabama",
