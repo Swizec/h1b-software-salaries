@@ -38950,17 +38950,17 @@ var Controls = React.createClass({displayName: "Controls",
         return (
             React.createElement("div", null, 
                 React.createElement(ControlRow, {data: this.props.data, 
-                            getToggleValues: getYears, 
+                            getToggleNames: getYears, 
                             hashPart: "0", 
                             updateDataFilter: this.updateYearFilter}), 
 
                 React.createElement(ControlRow, {data: this.props.data, 
-                            getToggleValues: getJobTitles, 
+                            getToggleNames: getJobTitles, 
                             hashPart: "2", 
                             updateDataFilter: this.updateJobTitleFilter}), 
 
                 React.createElement(ControlRow, {data: this.props.data, 
-                            getToggleValues: getStates, 
+                            getToggleNames: getStates, 
                             hashPart: "1", 
                             updateDataFilter: this.updateStateFilter, 
                             capitalize: "true"})
@@ -38971,9 +38971,9 @@ var Controls = React.createClass({displayName: "Controls",
 
 var ControlRow = React.createClass({displayName: "ControlRow",
     makePick: function (picked, newState) {
-        var togglesOn = this.state.togglesOn;
+        var toggleValues = this.state.toggleValues;
 
-        togglesOn = _.mapValues(togglesOn,
+        toggleValues = _.mapValues(toggleValues,
                               function (value, key) {
                                   return newState && key == picked;
                               });
@@ -38981,15 +38981,15 @@ var ControlRow = React.createClass({displayName: "ControlRow",
         // if newState is false, we want to reset
         this.props.updateDataFilter(picked, !newState);
 
-        this.setState({togglesOn: togglesOn});
+        this.setState({toggleValues: toggleValues});
     },
 
     getInitialState: function () {
-        var toggles = this.props.getToggleValues(this.props.data),
-            togglesOn = _.zipObject(toggles,
-                                    toggles.map(function () { return false; }));
+        var toggles = this.props.getToggleNames(this.props.data),
+            toggleValues = _.zipObject(toggles,
+                                       toggles.map(function () { return false; }));
 
-        return {togglesOn: togglesOn};
+        return {toggleValues: toggleValues};
     },
 
     componentWillMount: function () {
@@ -39012,9 +39012,9 @@ var ControlRow = React.createClass({displayName: "ControlRow",
         return (
             React.createElement("div", {className: "row"}, 
                 React.createElement("div", {className: "col-md-12"}, 
-            this.props.getToggleValues(this.props.data).map(function (value) {
-                var key = "toggle-"+value,
-                    label = value;
+            this.props.getToggleNames(this.props.data).map(function (name) {
+                var key = "toggle-"+name,
+                    label = name;
 
                 if (this.props.capitalize) {
                     label = label.toUpperCase();
@@ -39022,9 +39022,9 @@ var ControlRow = React.createClass({displayName: "ControlRow",
 
                 return (
                     React.createElement(Toggle, {label: label, 
-                            value: value, 
+                            name: name, 
                             key: key, 
-                            on: this.state.togglesOn[value], 
+                            value: this.state.toggleValues[name], 
                             onClick: this.makePick})
                 );
              }.bind(this))
@@ -39036,23 +39036,23 @@ var ControlRow = React.createClass({displayName: "ControlRow",
 
 var Toggle = React.createClass({displayName: "Toggle",
     getInitialState: function () {
-        return {on: false};
+        return {value: false};
     },
 
     handleClick: function (event) {
-       var newState = !this.state.on;
-       this.setState({on: newState});
-       this.props.onClick(this.props.value, newState);
+       var newValue = !this.state.value;
+       this.setState({value: newValue});
+       this.props.onClick(this.props.name, newValue);
     },
 
     componentWillReceiveProps: function (newProps) {
-        this.setState({on: newProps.on});
+        this.setState({value: newProps.value});
     },
 
     render: function () {
         var className = "btn btn-default";
 
-        if (this.state.on) {
+        if (this.state.value) {
             className += " btn-primary";
         }
 
