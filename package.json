@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/Swizec/react-d3js-experiment",
   "devDependencies": {
+    "bower-webpack-plugin": "^0.1.8",
     "debowerify": "^1.2.0",
     "grunt": "^0.4.5",
     "grunt-browserify": "^3.4.0",
