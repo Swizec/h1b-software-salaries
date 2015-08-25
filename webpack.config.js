@@ -14,14 +14,29 @@ module.exports = {
     },
     plugins: [
         new webpack.NoErrorsPlugin(),
-        new BowerWebpackPlugin()
+        new BowerWebpackPlugin({
+            //excludes: /.*\.less/
+        })
     ],
     module: {
         loaders: [
             {
                 test: /\.jsx$/,
-                loaders: ['babel'],
+                loader: 'babel',
                 include: path.join(__dirname, 'src')
+            },
+            {
+                test: /\.less$/,
+                loader: 'style!css!less',
+                include: path.join(__dirname, 'src')
+            },
+            {
+                test: /\.css$/,
+                loader: 'style!css'
+            },
+            {
+                test: /\.(woff|svg|ttf|eot)([\?]?.*)$/, 
+                loader: "file-loader?name=[name].[ext]"
             }
         ]
     },

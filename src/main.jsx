@@ -1,4 +1,7 @@
 
+//require('bootstrap');
+require('./style.less');
+
 var React = require('react'),
     _ = require('lodash'),
     d3 = require('d3'),
