@@ -4,6 +4,7 @@ import autobind from 'autobind-decorator';
 import d3 from 'd3';
 
 import Meta from './BaseComponent';
+import StatesMap from './StatesMap';
 
 @autobind
 class Title extends Meta {
@@ -29,7 +30,7 @@ class Title extends Meta {
         if (states.length > 1) {
             title = "";
         }else{
-            title = "in "+States[states[0].toUpperCase()];
+            title = "in "+StatesMap[states[0].toUpperCase()];
         }
 
         return title;

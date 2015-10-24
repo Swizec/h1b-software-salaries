@@ -1,25 +1,26 @@
 
-var React = require('react'),
-    _ = require('lodash');
+import React, { Component } from 'react';
+import autobind from 'autobind-decorator';
 
+@autobind
+class Toggle extends Component {
+    constructor() {
+        super();
 
+        this.state = {value: false};
+    }
 
-var Toggle = React.createClass({
-    getInitialState: function () {
-        return {value: false};
-    },
-
-    handleClick: function (event) {
+    handleClick(event) {
        var newValue = !this.state.value;
        this.setState({value: newValue});
        this.props.onClick(this.props.name, newValue);
-    },
+    }
 
-    componentWillReceiveProps: function (newProps) {
+    componentWillReceiveProps(newProps) {
         this.setState({value: newProps.value});
-    },
+    }
 
-    render: function () {
+    render() {
         var className = "btn btn-default";
 
         if (this.state.value) {
@@ -32,6 +33,6 @@ var Toggle = React.createClass({
             </button>
         );
     }
-});
+}
 
-module.exports = Controls;
+export default Toggle;

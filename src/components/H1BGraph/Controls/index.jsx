@@ -3,8 +3,23 @@ import React, { Component } from 'react';
 import autobind from 'autobind-decorator';
 import _ from 'lodash';
 
+import ControlRow from './ControlRow';
 
+@autobind
 class Controls extends Component {
+    constructor() {
+        super();
+
+        this.state = {
+            yearFilter: function () { return true; },
+            jobTitleFilter: function () { return true; },
+            stateFilter: function () { return true; },
+            year: '*',
+            state: '*',
+            jobTitle: '*'
+        };
+    }
+
     updateYearFilter(year, reset) {
         var filter = function (d) {
             return d.submit_date.getFullYear() == year;
@@ -45,15 +60,6 @@ class Controls extends Component {
 
         this.setState({stateFilter: filter,
                        state: state});
-    }
-
-    getInitialState() {
-        return {yearFilter: function () { return true; },
-                jobTitleFilter: function () { return true; },
-                stateFilter: function () { return true; },
-                year: '*',
-                state: '*',
-                jobTitle: '*'};
     }
 
     componentDidUpdate() {
@@ -101,29 +107,23 @@ class Controls extends Component {
 
         return (
             <div>
-                These are the controls
+                <ControlRow data={this.props.data}
+                            getToggleNames={getYears}
+                            hashPart="0"
+                            updateDataFilter={this.updateYearFilter} />
+
+                <ControlRow data={this.props.data}
+                            getToggleNames={getJobTitles}
+                            hashPart="2"
+                            updateDataFilter={this.updateJobTitleFilter} />
+
+                <ControlRow data={this.props.data}
+                            getToggleNames={getStates}
+                            hashPart="1"
+                            updateDataFilter={this.updateStateFilter}
+                            capitalize="true" />
             </div>
         )
-
-        /* return (
-           <div>
-           <ControlRow data={this.props.data}
-           getToggleNames={getYears}
-           hashPart="0"
-           updateDataFilter={this.updateYearFilter} />
-
-           <ControlRow data={this.props.data}
-           getToggleNames={getJobTitles}
-           hashPart="2"
-           updateDataFilter={this.updateJobTitleFilter} />
-
-           <ControlRow data={this.props.data}
-           getToggleNames={getStates}
-           hashPart="1"
-           updateDataFilter={this.updateStateFilter}
-           capitalize="true" />
-           </div>
-           ) */
     }
 }
 

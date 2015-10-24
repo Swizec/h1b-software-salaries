@@ -4,8 +4,6 @@ import React, { Component } from 'react';
 import d3 from 'd3';
 import _ from 'lodash';
 
-import USStates from './StatesMap';
-
 export default class Meta extends Component {
     getYears(data) {
         data || (data = this.props.data);

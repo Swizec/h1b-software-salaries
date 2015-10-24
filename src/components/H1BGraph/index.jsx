@@ -6,7 +6,7 @@ import d3 from 'd3';
 import { Title, Description } from './Meta';
 import Histogram from '../Histogram';
 import Mean from './Mean';
-//import Controls from './Controls';
+import Controls from './Controls';
 
 
 require('./style.less');
@@ -123,6 +123,7 @@ class H1BGraph extends Component {
                     <Histogram {...params} data={filteredData} />
                     <Mean {...params} data={filteredData} width={fullWidth} />
                 </svg>
+                <Controls data={onlyGoodVisas} updateDataFilter={this.updateDataFilter} />
             </div>
         );
 

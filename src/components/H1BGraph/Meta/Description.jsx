@@ -4,6 +4,8 @@ import autobind from 'autobind-decorator';
 import d3 from 'd3';
 
 import Meta from './BaseComponent';
+import StatesMap from './StatesMap';
+
 
 @autobind
 class Description extends Meta {
@@ -105,7 +107,7 @@ class Description extends Meta {
         if (states.length > 1) {
             fragment = "US";
         }else{
-            fragment = States[states[0].toUpperCase()];
+            fragment = StatesMap[states[0].toUpperCase()];
         }
 
         return fragment;
