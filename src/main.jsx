@@ -6,6 +6,9 @@ var React = require('react'),
     Controls = require('./controls.jsx'),
     meta = require('./meta.jsx');
 
+require('./components/H1BGraph/style.less');
+
+
 String.prototype.capitalize = function() {
     return this.charAt(0).toUpperCase() + this.slice(1);
 }
