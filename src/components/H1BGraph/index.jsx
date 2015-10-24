@@ -3,9 +3,10 @@ import React, { Component } from 'react';
 import autobind from 'autobind-decorator';
 import d3 from 'd3';
 
-import { BlaTitle as Title, BlaDescription as Description } from '../Meta';
-import Histogram from './Histogram';
+import { Title, Description } from './Meta';
+import Histogram from '../Histogram';
 import Mean from './Mean';
+//import Controls from '.
 
 
 require('./style.less');
