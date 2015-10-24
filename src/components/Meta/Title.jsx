@@ -22,7 +22,7 @@ class Title extends Meta {
     }
 
     getStateFragment() {
-        var states = this.getStates(),
+        var states = this.getUSStates(),
             title;
 
 

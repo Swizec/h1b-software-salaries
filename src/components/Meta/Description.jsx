@@ -56,7 +56,7 @@ class Description extends Meta {
             let year = years[0],
                 lastYear = this.getAllDataByYear(year-1);
 
-            let states = this.getStates(),
+            let states = this.getUSStates(),
                 jobTitles = this.getJobTitles();
 
             if (jobTitles.length == 1) {
@@ -99,7 +99,7 @@ class Description extends Meta {
     }
 
     getStateFragment() {
-        let states = this.getStates(),
+        let states = this.getUSStates(),
             fragment;
 
         if (states.length > 1) {
