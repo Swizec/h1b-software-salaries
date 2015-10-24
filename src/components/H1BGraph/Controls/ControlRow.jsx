@@ -9,8 +9,6 @@ import Toggle from './Toggle';
 class ControlRow extends Component {
     constructor() {
         super();
-
-        this.state = {toggleValues: {}};
     }
 
     makePick(picked, newState) {
@@ -34,8 +32,7 @@ class ControlRow extends Component {
             toggleValues = _.zipObject(toggles,
                                        toggles.map(function () { return false; }));
 
-        this.setState({toggleValues: toggleValues});
-
+        this.state = {toggleValues: toggleValues};
 
         if (hash.length) {
             var fromUrl = hash[this.props.hashPart];
