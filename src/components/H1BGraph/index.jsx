@@ -3,6 +3,8 @@ import React, { Component } from 'react';
 import autobind from 'autobind-decorator';
 import d3 from 'd3';
 
+import { BlaTitle as Title } from '../Meta';
+
 require('./style.less');
 
 @autobind
@@ -51,8 +53,6 @@ class H1BGraph extends Component {
     loadRawData() {
         let dateFormat = d3.time.format("%m/%d/%Y");
 
-        console.log(this.props.url);
-
         d3.csv(this.props.url)
           .row(function (d) {
               if (!d['base salary']) {
@@ -95,7 +95,7 @@ class H1BGraph extends Component {
             );
         }
 
-        var params = {
+        let params = {
             bins: 20,
             width: 500,
             height: 500,
@@ -106,26 +106,32 @@ class H1BGraph extends Component {
         },
             fullWidth = 700;
 
-        var onlyGoodVisas = this.state.rawData.filter(function (d) {
+        let onlyGoodVisas = this.state.rawData.filter(function (d) {
             return d.case_status == "certified";
         }),
             filteredData = onlyGoodVisas.filter(this.state.dataFilter);
 
         return (
             <div>
-                <meta.Title data={filteredData} />
-                <meta.Description data={filteredData} allData={onlyGoodVisas} />
-                <div className="row">
-                    <div className="col-md-12">
-                        <svg width={fullWidth} height={params.height}>
-                            <drawers.Histogram {...params} data={filteredData} />
-                            <drawers.Mean {...params} data={filteredData} width={fullWidth} />
-                        </svg>
-                    </div>
-                </div>
-                <Controls data={onlyGoodVisas} updateDataFilter={this.updateDataFilter} />
+                <Title data={filteredData} />
             </div>
         );
+
+        /* return (
+           <div>
+           <meta.Title data={filteredData} />
+           <meta.Description data={filteredData} allData={onlyGoodVisas} />
+           <div className="row">
+           <div className="col-md-12">
+           <svg width={fullWidth} height={params.height}>
+           <drawers.Histogram {...params} data={filteredData} />
+           <drawers.Mean {...params} data={filteredData} width={fullWidth} />
+           </svg>
+           </div>
+           </div>
+           <Controls data={onlyGoodVisas} updateDataFilter={this.updateDataFilter} />
+           </div>
+           ); */
     }
 }
 

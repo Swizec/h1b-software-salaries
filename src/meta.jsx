@@ -4,117 +4,13 @@ var React = require('react'),
     _ = require('lodash'),
     States = require('./states.js');
 
+
 var MetaMixin = {
-    getYears: function (data) {
-        data || (data = this.props.data);
 
-        return _.keys(
-            _.groupBy(this.props.data,
-                      function (d) { return d.submit_date.getFullYear(); })
-        );
-    },
-
-    getStates: function (data) {
-        data || (data = this.props.data);
-
-        return _.keys(
-            _.groupBy(this.props.data,
-                      function (d) { return d.state; })
-        );
-    },
-
-    getJobTitles: function (data) {
-        data || (data = this.props.data);
-
-        return _.keys(
-            _.groupBy(this.props.data,
-                      function (d) { return d.clean_job_title; })
-        );
-    },
-
-    getFormatter: function (data) {
-        data || (data = this.props.data);
-
-        return d3.scale.linear()
-                 .domain(d3.extent(this.props.data,
-                                   function (d) { return d.base_salary; }))
-                 .tickFormat();
-    }
 };
 
 
-var Title = React.createClass({
-    mixins: [MetaMixin],
 
-    getYearsFragment: function () {
-        var years = this.getYears(),
-            title;
-
-
-        if (years.length > 1) {
-            title = "";
-        }else{
-            title = "in "+years[0];
-        }
-
-        return title;
-    },
-
-    getStateFragment: function () {
-        var states = this.getStates(),
-            title;
-
-
-        if (states.length > 1) {
-            title = "";
-        }else{
-            title = "in "+States[states[0].toUpperCase()];
-        }
-
-        return title;
-    },
-
-    getJobTitleFragment: function () {
-        var jobTitles = this.getJobTitles(),
-            title;
-
-        if (jobTitles.length > 1) {
-            title = "H1B workers in the software industry";
-        }else{
-            if (jobTitles[0] == "other") {
-                title = "Other H1B workers in the software industry";
-            }else{
-                title = "Software "+jobTitles[0]+"s on an H1B";
-            }
-        }
-
-        return title;
-    },
-
-    render: function () {
-        var mean = d3.mean(this.props.data,
-                           function (d) { return d.base_salary; }),
-            format = this.getFormatter();
-
-        var
-            yearsFragment = this.getYearsFragment(),
-            jobTitleFragment = this.getJobTitleFragment(),
-            stateFragment = this.getStateFragment(),
-            title;
-
-        if (yearsFragment && stateFragment) {
-            title = (
-                <h2>{stateFragment.capitalize()}, {jobTitleFragment.match(/^H1B/) ? jobTitleFragment : jobTitleFragment.decapitalize()} {yearsFragment.length ? "made" : "make"} ${format(mean)}/year {yearsFragment}</h2>
-            );
-        }else{
-            title = (
-                <h2>{jobTitleFragment} {yearsFragment.length ? "made" : "make"} ${format(mean)}/year {stateFragment} {yearsFragment}</h2>
-            );
-        }
-
-        return title;
-    }
-});
 
 var Description = React.createClass({
     mixins: [MetaMixin],
