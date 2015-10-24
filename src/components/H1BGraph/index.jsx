@@ -6,7 +6,7 @@ import d3 from 'd3';
 import { Title, Description } from './Meta';
 import Histogram from '../Histogram';
 import Mean from './Mean';
-//import Controls from '.
+//import Controls from './Controls';
 
 
 require('./style.less');
