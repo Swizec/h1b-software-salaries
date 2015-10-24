@@ -4,6 +4,7 @@ import autobind from 'autobind-decorator';
 import d3 from 'd3';
 
 import { BlaTitle as Title, BlaDescription as Description } from '../Meta';
+import Histogram from './Histogram';
 
 require('./style.less');
 
@@ -115,6 +116,9 @@ class H1BGraph extends Component {
             <div>
                 <Title data={filteredData} />
                 <Description data={filteredData} allData={onlyGoodVisas} />
+                <svg width={fullWidth} height={params.height}>
+                    <Histogram {...params} data={filteredData} />
+                </svg>
             </div>
         );
 

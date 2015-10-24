@@ -32,7 +32,7 @@ class Description extends Meta {
     }
 
     getYearFragment() {
-        var years = this.getYears(),
+        let years = this.getYears(),
             fragment;
 
         if (years.length > 1) {
