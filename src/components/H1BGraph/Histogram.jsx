@@ -3,6 +3,8 @@ import React, { Component } from 'react';
 import autobind from 'autobind-decorator';
 import d3 from 'd3';
 
+import Axis from './Axis';
+
 
 class HistogramBar extends Component {
     render() {
@@ -111,6 +113,7 @@ class Histogram extends Component {
                 <g className="bars">
                     {this.state.bars.map(this.makeBar)}
                 </g>
+                <Axis {...this.props} data={this.state.bars}  />
             </g>
         );
     }
