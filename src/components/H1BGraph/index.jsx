@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import autobind from 'autobind-decorator';
 import d3 from 'd3';
 
-import { BlaTitle as Title } from '../Meta';
+import { BlaTitle as Title, BlaDescription as Description } from '../Meta';
 
 require('./style.less');
 
@@ -114,6 +114,7 @@ class H1BGraph extends Component {
         return (
             <div>
                 <Title data={filteredData} />
+                <Description data={filteredData} allData={onlyGoodVisas} />
             </div>
         );
 
