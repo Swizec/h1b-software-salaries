@@ -5,6 +5,8 @@ import d3 from 'd3';
 
 import { BlaTitle as Title, BlaDescription as Description } from '../Meta';
 import Histogram from './Histogram';
+import Mean from './Mean';
+
 
 require('./style.less');
 
@@ -118,6 +120,7 @@ class H1BGraph extends Component {
                 <Description data={filteredData} allData={onlyGoodVisas} />
                 <svg width={fullWidth} height={params.height}>
                     <Histogram {...params} data={filteredData} />
+                    <Mean {...params} data={filteredData} width={fullWidth} />
                 </svg>
             </div>
         );

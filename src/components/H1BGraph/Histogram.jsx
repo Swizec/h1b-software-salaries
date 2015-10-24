@@ -5,7 +5,6 @@ import d3 from 'd3';
 
 import Axis from './Axis';
 
-
 class HistogramBar extends Component {
     render() {
         let translate = "translate(" + this.props.x + "," + this.props.y + ")",
