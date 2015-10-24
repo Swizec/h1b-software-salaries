@@ -4,7 +4,9 @@
   "description": "Experiment to see if we can get react.js and d3.js playing well together.",
   "main": "index.html",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build:webpack": "NODE_ENV=production webpack --config webpack.config.prod.js",
+    "build": "npm run clean && npm run build:webpack",
+    "start": "node devServer.js"
   },
   "repository": {
     "type": "git",
@@ -17,13 +19,25 @@
   },
   "homepage": "https://github.com/Swizec/react-d3js-experiment",
   "devDependencies": {
-    "debowerify": "^1.2.0",
-    "grunt": "^0.4.5",
-    "grunt-browserify": "^3.4.0",
-    "grunt-contrib-less": "^1.0.0",
-    "grunt-contrib-watch": "^0.6.1",
-    "grunt-react": "^0.10.0",
-    "jit-grunt": "^0.9.1",
-    "reactify": "^1.0.0"
+    "babel-core": "^5.4.7",
+    "babel-eslint": "^3.1.9",
+    "babel-loader": "^5.1.2",
+    "babel-plugin-react-transform": "^1.1.1",
+    "eslint": "^1.3.1",
+    "eslint-plugin-react": "^2.3.0",
+    "express": "^4.13.3",
+    "react-transform-catch-errors": "^1.0.0",
+    "react-transform-hmr": "^1.0.0",
+    "redbox-react": "^1.0.1",
+    "rimraf": "^2.4.3",
+    "webpack": "^1.9.6",
+    "webpack-dev-middleware": "^1.2.0",
+    "webpack-hot-middleware": "^2.0.0"
+  },
+  "dependencies": {
+    "autobind-decorator": "^1.3.2",
+    "d3": "^3.5.6",
+    "flux": "^2.1.1",
+    "react": "^0.13.0"
   }
 }
