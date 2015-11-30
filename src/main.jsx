@@ -1,11 +1,4 @@
 
-/* var React = require('react'),
-   _ = require('lodash'),
-   d3 = require('d3'),
-   drawers = require('./drawers.jsx'),
-   Controls = require('./controls.jsx'),
-   meta = require('./meta.jsx'); */
-
 import React from 'react';
 
 import H1BGraph from './components/H1BGraph';

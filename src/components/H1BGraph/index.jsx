@@ -126,22 +126,6 @@ class H1BGraph extends Component {
                 <Controls data={onlyGoodVisas} updateDataFilter={this.updateDataFilter} />
             </div>
         );
-
-        /* return (
-           <div>
-           <meta.Title data={filteredData} />
-           <meta.Description data={filteredData} allData={onlyGoodVisas} />
-           <div className="row">
-           <div className="col-md-12">
-           <svg width={fullWidth} height={params.height}>
-           <drawers.Histogram {...params} data={filteredData} />
-           <drawers.Mean {...params} data={filteredData} width={fullWidth} />
-           </svg>
-           </div>
-           </div>
-           <Controls data={onlyGoodVisas} updateDataFilter={this.updateDataFilter} />
-           </div>
-           ); */
     }
 }
 
