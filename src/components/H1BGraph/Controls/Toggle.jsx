@@ -1,8 +1,6 @@
 
 import React, { Component } from 'react';
-import autobind from 'autobind-decorator';
 
-@autobind
 class Toggle extends Component {
     constructor() {
         super();
@@ -28,7 +26,7 @@ class Toggle extends Component {
         }
 
         return (
-            <button className={className} onClick={this.handleClick}>
+            <button className={className} onClick={::this.handleClick}>
                 {this.props.label}
             </button>
         );

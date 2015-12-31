@@ -1,6 +1,5 @@
 
 import React, { Component } from 'react';
-import autobind from 'autobind-decorator';
 import d3 from 'd3';
 
 import Axis from './Axis';
@@ -38,14 +37,7 @@ class HistogramBar extends Component {
     }
 }
 
-@autobind
 class Histogram extends Component {
-    /* propTypes: {
-       bins: React.PropTypes.number.isRequired,
-       width: React.PropTypes.number.isRequired,
-       height: React.PropTypes.number.isRequired
-       }, */
-
     componentWillMount() {
         this.histogram = d3.layout.histogram();
         this.widthScale = d3.scale.linear();
@@ -63,8 +55,7 @@ class Histogram extends Component {
             .bins(props.bins)
             .value(this.props.value);
 
-        var bars = this.histogram(props.data)
-                       .reduce(this.mergeSmall, []),
+        var bars = this.histogram(props.data),
             counts = bars.map(function (d) { return d.y; });
 
         this.setState({bars: bars});
@@ -76,17 +67,6 @@ class Histogram extends Component {
         this.yScale
             .domain([0, d3.max(bars.map(function (d) { return d.x+d.dx; }))])
             .range([0, props.height-props.topMargin-props.bottomMargin]);
-    }
-
-    mergeSmall(mem, d) {
-        //if (d.y/this.props.data.length > 0.01  || !mem.length) {
-            mem.push(d);
-        //}else{
-        //    mem[mem.length-1].dx += d.dx;
-        //    mem[mem.length-1].y += d.y;
-        //}
-
-        return mem;
     }
 
     makeBar(bar) {
@@ -110,7 +90,7 @@ class Histogram extends Component {
         return (
             <g className="histogram" transform={translate}>
                 <g className="bars">
-                    {this.state.bars.map(this.makeBar)}
+                    {this.state.bars.map(::this.makeBar)}
                 </g>
                 <Axis {...this.props} data={this.state.bars}  />
             </g>

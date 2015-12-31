@@ -1,6 +1,5 @@
 
 import React, { Component } from 'react';
-import autobind from 'autobind-decorator';
 import d3 from 'd3';
 
 import { Title, Description } from './Meta';
@@ -11,14 +10,13 @@ import Controls from './Controls';
 
 require('./style.less');
 
-@autobind
 class H1BGraph extends Component {
     constructor() {
         super();
 
         this.state = {
             rawData: [],
-            dataFilter: function () { return true; }
+            dataFilter: () => true
         };
     }
 
@@ -58,7 +56,7 @@ class H1BGraph extends Component {
         let dateFormat = d3.time.format("%m/%d/%Y");
 
         d3.csv(this.props.url)
-          .row(function (d) {
+          .row((d) => {
               if (!d['base salary']) {
                   return null;
               }
@@ -73,15 +71,15 @@ class H1BGraph extends Component {
                       salary_to: d['salary to'] ? Number(d['salary to']) : null,
                       city: d.city,
                       state: d.state};
-          }.bind(this))
-          .get(function (error, rows) {
+          })
+          .get((error, rows) => {
               if (error) {
                   console.error(error);
                   console.error(error.stack);
               }else{
                   this.setState({rawData: rows});
               }
-          }.bind(this));
+          });
     }
 
     updateDataFilter(filter) {
@@ -106,13 +104,13 @@ class H1BGraph extends Component {
             axisMargin: 83,
             topMargin: 10,
             bottomMargin: 5,
-            value: function (d) { return d.base_salary; }
+            value: (d) => d.base_salary
         },
             fullWidth = 700;
 
-        let onlyGoodVisas = this.state.rawData.filter(function (d) {
-            return d.case_status == "certified";
-        }),
+        let onlyGoodVisas = this.state
+                                .rawData
+                                .filter((d) => d.case_status == "certified"),
             filteredData = onlyGoodVisas.filter(this.state.dataFilter);
 
         return (
@@ -123,7 +121,7 @@ class H1BGraph extends Component {
                     <Histogram {...params} data={filteredData} />
                     <Mean {...params} data={filteredData} width={fullWidth} />
                 </svg>
-                <Controls data={onlyGoodVisas} updateDataFilter={this.updateDataFilter} />
+                <Controls data={onlyGoodVisas} updateDataFilter={::this.updateDataFilter} />
             </div>
         );
     }

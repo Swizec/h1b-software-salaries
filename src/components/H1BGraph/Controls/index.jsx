@@ -1,11 +1,8 @@
 
 import React, { Component } from 'react';
-import autobind from 'autobind-decorator';
 import _ from 'lodash';
 
 import ControlRow from './ControlRow';
-
-@autobind
 class Controls extends Component {
     constructor() {
         super();
@@ -110,17 +107,17 @@ class Controls extends Component {
                 <ControlRow data={this.props.data}
                             getToggleNames={getYears}
                             hashPart="0"
-                            updateDataFilter={this.updateYearFilter} />
+                            updateDataFilter={::this.updateYearFilter} />
 
                 <ControlRow data={this.props.data}
                             getToggleNames={getJobTitles}
                             hashPart="2"
-                            updateDataFilter={this.updateJobTitleFilter} />
+                            updateDataFilter={::this.updateJobTitleFilter} />
 
                 <ControlRow data={this.props.data}
                             getToggleNames={getStates}
                             hashPart="1"
-                            updateDataFilter={this.updateStateFilter}
+                            updateDataFilter={::this.updateStateFilter}
                             capitalize="true" />
             </div>
         )

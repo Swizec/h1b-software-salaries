@@ -1,13 +1,11 @@
 
 import React, { Component } from 'react';
-import autobind from 'autobind-decorator';
 import d3 from 'd3';
 
 import Meta from './BaseComponent';
 import StatesMap from './StatesMap';
 
 
-@autobind
 class Description extends Meta {
     getAllDataByYear(year, data) {
         data || (data = this.props.allData);

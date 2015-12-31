@@ -1,12 +1,10 @@
 
 import React, { Component } from 'react';
-import autobind from 'autobind-decorator';
 import d3 from 'd3';
 
 import Meta from './BaseComponent';
 import StatesMap from './StatesMap';
 
-@autobind
 class Title extends Meta {
     getYearsFragment() {
         var years = this.getYears(),

@@ -1,11 +1,9 @@
 
 import React, { Component } from 'react';
-import autobind from 'autobind-decorator';
 import _ from 'lodash';
 
 import Toggle from './Toggle';
 
-@autobind
 class ControlRow extends Component {
     constructor() {
         super();
@@ -63,7 +61,7 @@ class ControlRow extends Component {
                             name={name}
                             key={key}
                             value={this.state.toggleValues[name]}
-                            onClick={this.makePick} />
+                            onClick={::this.makePick} />
                 );
              }.bind(this))}
                 </div>

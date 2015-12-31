@@ -1,9 +1,7 @@
 
 import React, { Component } from 'react';
-import autobind from 'autobind-decorator';
 import d3 from 'd3';
 
-@autobind
 class Axis extends Component {
     componentWillMount() {
         this.yScale = d3.scale.linear();
