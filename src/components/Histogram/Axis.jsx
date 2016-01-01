@@ -1,5 +1,6 @@
 
 import React, { Component } from 'react';
+import ReactDOM from 'react-dom';
 import d3 from 'd3';
 
 class Axis extends Component {
@@ -38,7 +39,7 @@ class Axis extends Component {
     componentDidMount() { this.renderAxis(); }
 
     renderAxis() {
-        let node = React.findDOMNode(this);
+        let node = ReactDOM.findDOMNode(this);
 
         d3.select(node).call(this.axis);
     }
