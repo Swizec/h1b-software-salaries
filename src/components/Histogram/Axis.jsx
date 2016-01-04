@@ -9,9 +9,7 @@ class Axis extends Component {
         this.axis = d3.svg.axis()
                       .scale(this.yScale)
                       .orient("left")
-                      .tickFormat(function (d) {
-                          return "$"+this.yScale.tickFormat()(d);
-                      }.bind(this));
+                      .tickFormat((d) => "$"+this.yScale.tickFormat()(d));
 
         this.update_d3(this.props);
     }
@@ -23,14 +21,13 @@ class Axis extends Component {
     update_d3(props) {
         this.yScale
             .domain([0,
-                     d3.max(props.data.map(
-                         function (d) { return d.x+d.dx; }))])
+                     d3.max(props.data.map((d) => d.x+d.dx))])
             .range([0, props.height-props.topMargin-props.bottomMargin]);
 
         this.axis
             .ticks(props.data.length)
             .tickValues(props.data
-                             .map(function (d) { return d.x; })
+                             .map((d) => d.x)
                              .concat(props.data[props.data.length-1].x
                                     +props.data[props.data.length-1].dx));
     }
@@ -45,7 +42,7 @@ class Axis extends Component {
     }
 
     render() {
-        let translate = "translate("+(this.props.axisMargin-3)+", 0)";
+        let translate = `translate(${this.props.axisMargin-3}, 0)`;
         return (
             <g className="axis" transform={translate}>
             </g>

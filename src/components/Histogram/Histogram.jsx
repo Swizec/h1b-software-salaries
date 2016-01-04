@@ -6,7 +6,7 @@ import Axis from './Axis';
 
 class HistogramBar extends Component {
     render() {
-        let translate = "translate(" + this.props.x + "," + this.props.y + ")",
+        let translate = `translate(${this.props.x}, ${this.props.y})`,
             label = this.props.percent.toFixed(0)+'%';
 
         if (this.props.percent < 1) {
@@ -55,8 +55,8 @@ class Histogram extends Component {
             .bins(props.bins)
             .value(this.props.value);
 
-        var bars = this.histogram(props.data),
-            counts = bars.map(function (d) { return d.y; });
+        let bars = this.histogram(props.data),
+            counts = bars.map((d) => d.y);
 
         this.setState({bars: bars});
 
@@ -65,14 +65,14 @@ class Histogram extends Component {
             .range([9, props.width-props.axisMargin]);
 
         this.yScale
-            .domain([0, d3.max(bars.map(function (d) { return d.x+d.dx; }))])
+            .domain([0, d3.max(bars.map((d) => d.x+d.dx))])
             .range([0, props.height-props.topMargin-props.bottomMargin]);
     }
 
     makeBar(bar) {
-        var percent = bar.y/this.props.data.length*100;
+        let percent = bar.y/this.props.data.length*100;
 
-        var props = {percent: percent,
+        let props = {percent: percent,
                      x: this.props.axisMargin,
                      y: this.yScale(bar.x),
                      width: this.widthScale(bar.y),
@@ -85,7 +85,7 @@ class Histogram extends Component {
     }
 
     render() {
-        var translate = "translate(0, "+this.props.topMargin+")";
+        let translate = `translate(0, ${this.props.topMargin})`;
 
         return (
             <g className="histogram" transform={translate}>
