@@ -4,14 +4,16 @@ import ReactDOM from 'react-dom';
 import d3 from 'd3';
 
 class Axis extends Component {
-    componentWillMount() {
+    constructor(props) {
+        super();
+
         this.yScale = d3.scale.linear();
         this.axis = d3.svg.axis()
                       .scale(this.yScale)
                       .orient("left")
                       .tickFormat((d) => "$"+this.yScale.tickFormat()(d));
 
-        this.update_d3(this.props);
+        this.update_d3(props);
     }
 
     componentWillReceiveProps(newProps) {

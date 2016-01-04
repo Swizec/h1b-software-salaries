@@ -38,12 +38,14 @@ class HistogramBar extends Component {
 }
 
 class Histogram extends Component {
-    componentWillMount() {
+    constructor(props) {
+        super();
+
         this.histogram = d3.layout.histogram();
         this.widthScale = d3.scale.linear();
         this.yScale = d3.scale.linear();
 
-        this.update_d3(this.props);
+        this.update_d3(props);
     }
 
     componentWillReceiveProps(newProps) {
@@ -53,12 +55,10 @@ class Histogram extends Component {
     update_d3(props) {
         this.histogram
             .bins(props.bins)
-            .value(this.props.value);
+            .value(props.value);
 
         let bars = this.histogram(props.data),
             counts = bars.map((d) => d.y);
-
-        this.setState({bars: bars});
 
         this.widthScale
             .domain([d3.min(counts), d3.max(counts)])
@@ -85,14 +85,15 @@ class Histogram extends Component {
     }
 
     render() {
-        let translate = `translate(0, ${this.props.topMargin})`;
+        let translate = `translate(0, ${this.props.topMargin})`,
+            bars = this.histogram(this.props.data);
 
         return (
             <g className="histogram" transform={translate}>
                 <g className="bars">
-                    {this.state.bars.map(::this.makeBar)}
+                    {bars.map(::this.makeBar)}
                 </g>
-                <Axis {...this.props} data={this.state.bars}  />
+                <Axis {...this.props} data={bars}  />
             </g>
         );
     }
