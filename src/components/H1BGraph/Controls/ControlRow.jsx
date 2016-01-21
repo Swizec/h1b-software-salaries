@@ -5,10 +5,6 @@ import _ from 'lodash';
 import Toggle from './Toggle';
 
 class ControlRow extends Component {
-    constructor() {
-        super();
-    }
-
     makePick(picked, newState) {
         var toggleValues = this.state.toggleValues;
 
