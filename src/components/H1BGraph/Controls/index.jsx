@@ -3,14 +3,15 @@ import React, { Component } from 'react';
 import _ from 'lodash';
 
 import ControlRow from './ControlRow';
+
 class Controls extends Component {
     constructor() {
         super();
 
         this.state = {
-            yearFilter: function () { return true; },
-            jobTitleFilter: function () { return true; },
-            stateFilter: function () { return true; },
+            yearFilter: () => true,
+            jobTitleFilter: () => true,
+            stateFilter: () => true,
             year: '*',
             state: '*',
             jobTitle: '*'
@@ -18,12 +19,10 @@ class Controls extends Component {
     }
 
     updateYearFilter(year, reset) {
-        var filter = function (d) {
-            return d.submit_date.getFullYear() == year;
-        };
+        let filter = (d) => d.submit_date.getFullYear() == year;
 
         if (reset || !year) {
-            filter = function () { return true; };
+            filter = () => true;
             year = '*';
         }
 
@@ -32,12 +31,10 @@ class Controls extends Component {
     }
 
     updateJobTitleFilter(title, reset) {
-        var filter = function (d) {
-            return d.clean_job_title == title;
-        };
+        var filter = (d) => d.clean_job_title == title;
 
         if (reset || !title) {
-            filter = function () { return true; };
+            filter = () => true;
             title = '*';
         }
 
@@ -46,12 +43,10 @@ class Controls extends Component {
     }
 
     updateStateFilter(state, reset) {
-        var filter = function (d) {
-            return d.state == state;
-        };
+        var filter = (d) => d.state == state;
 
         if (reset || !state) {
-            filter = function () { return true; };
+            filter = () => true;
             state = '*';
         }
 
@@ -65,12 +60,10 @@ class Controls extends Component {
                                 this.state.jobTitle || '*'].join("-");
 
         this.props.updateDataFilter(
-            (function (filters) {
-                return function (d) {
-                    return filters.yearFilter(d)
-                        && filters.jobTitleFilter(d)
-                        && filters.stateFilter(d);
-                };
+            ((filters) => {
+                return (d) =>  filters.yearFilter(d)
+                            && filters.jobTitleFilter(d)
+                            && filters.stateFilter(d);
             })(this.state)
         );
     }
@@ -80,27 +73,15 @@ class Controls extends Component {
     }
 
     render() {
-        var getYears = function (data) {
-            return _.keys(_.groupBy(data,
-                                    function (d) {
-                                        return d.submit_date.getFullYear()
-                                    }))
-                    .map(Number);
-        };
+        let getYears = (data) => _.keys(_.groupBy(data,
+                                                  (d) => d.submit_date.getFullYear()))
+                                  .map(Number);
 
-        var getJobTitles = function (data) {
-            return _.keys(_.groupBy(data,
-                                    function (d) {
-                                        return d.clean_job_title;
-                                    }));
-        };
+        let getJobTitles = (data) => _.keys(_.groupBy(data, (d) => d.clean_job_title));
 
-        var getStates = function (data) {
-            return _.sortBy(_.keys(_.groupBy(data,
-                                    function (d) {
-                                        return d.state;
-                                    })));
-        };
+
+        let getStates = (data) => _.sortBy(_.keys(_.groupBy(data, (d) => d.state)));
+
 
         return (
             <div>

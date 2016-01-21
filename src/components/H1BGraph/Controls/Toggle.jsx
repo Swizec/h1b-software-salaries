@@ -9,7 +9,7 @@ class Toggle extends Component {
     }
 
     handleClick(event) {
-       var newValue = !this.state.value;
+       let newValue = !this.state.value;
        this.setState({value: newValue});
        this.props.onClick(this.props.name, newValue);
     }
@@ -19,7 +19,7 @@ class Toggle extends Component {
     }
 
     render() {
-        var className = "btn btn-default";
+        let className = "btn btn-default";
 
         if (this.state.value) {
             className += " btn-primary";
