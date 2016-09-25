@@ -36,5 +36,5 @@ def parse():
             writer.writerow([cell(td) for td in d(row)("td")])
 
 if __name__ == "__main__":
-    #download("http://h1bdata.info/beta/index.php?em=&job=software+*")
-    parse()
+    download("http://h1bdata.info/index.php?em=&job=software+*")
+    #parse()
