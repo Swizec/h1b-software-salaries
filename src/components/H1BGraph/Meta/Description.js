@@ -2,6 +2,7 @@
 import React from 'react';
 import * as d3 from 'd3';
 import _ from 'lodash';
+import S from 'string';
 
 import Meta from './BaseComponent';
 import StatesMap from './StatesMap';
@@ -122,16 +123,13 @@ class Description extends Meta {
                                 .filter(function (d) {
                                     return d.length/this.props.data.length > 0.01;
                                 }.bind(this)),
-                               function (d) {
-                                   return d3.mean(_.pluck(d, 'base_salary'));
+                               function (items) {
+                                   return d3.mean(items, (d) => d['base_salary']);
                                }),
             best = ordered[ordered.length-1],
-            mean = d3.mean(_.pluck(best, 'base_salary'));
+            mean = d3.mean(best, (d) => d['base_salary']);
 
-        let city = best[0].city
-                          .split(" ")
-                          .map(function (w) { return w.capitalize() })
-                          .join(" ");
+        let city = S(best[0].city).titleCase().s;
 
         let jobFragment = this.getJobTitleFragment()
                               .replace("foreign nationals", "")

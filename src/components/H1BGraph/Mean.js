@@ -1,10 +1,10 @@
 
 import React, { Component } from 'react';
-import d3 from 'd3';
+import * as d3 from 'd3';
 
 class Mean extends Component {
     componentWillMount() {
-        this.yScale = d3.scale.linear();
+        this.yScale = d3.scaleLinear();
 
         this.update_d3(this.props);
     }
@@ -16,13 +16,13 @@ class Mean extends Component {
     update_d3(props) {
         this.yScale
             .domain([0,
-                     d3.max(props.data.map(this.props.value))])
+                     d3.max(props.data, this.props.value)])
             .range([0, props.height-props.topMargin-props.bottomMargin]);
     }
 
     render() {
         var mean = d3.mean(this.props.data, this.props.value),
-            line = d3.svg.line()
+            line = d3.line()
             ([[0, 5],
               [this.props.width, 5]]);
 

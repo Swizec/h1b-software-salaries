@@ -1,6 +1,7 @@
 
 import React, { Component } from 'react';
-import d3 from 'd3';
+import { mean as d3mean } from 'd3-array';
+import S from 'string';
 
 import Meta from './BaseComponent';
 import StatesMap from './StatesMap';
@@ -52,8 +53,8 @@ class Title extends Meta {
     }
 
     render() {
-        var mean = d3.mean(this.props.data,
-                           function (d) { return d.base_salary; }),
+        var mean = d3mean(this.props.data,
+                          function (d) { return d.base_salary; }),
             format = this.getFormatter();
 
         var
@@ -64,7 +65,7 @@ class Title extends Meta {
 
         if (yearsFragment && stateFragment) {
             title = (
-                <h2>{stateFragment.capitalize()}, {jobTitleFragment.match(/^H1B/) ? jobTitleFragment : jobTitleFragment.decapitalize()} {yearsFragment.length ? "made" : "make"} ${format(mean)}/year {yearsFragment}</h2>
+                <h2>{S(stateFragment).capitalize().s}, {jobTitleFragment} {yearsFragment.length ? "made" : "make"} ${format(mean)}/year {yearsFragment}</h2>
             );
         }else{
             title = (

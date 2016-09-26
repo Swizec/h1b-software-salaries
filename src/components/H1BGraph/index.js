@@ -6,6 +6,8 @@ import Histogram from '../Histogram';
 import Mean from './Mean';
 import Controls from './Controls';
 
+import './style.css';
+
 class H1BGraph extends Component {
     constructor() {
         super();
@@ -49,7 +51,7 @@ class H1BGraph extends Component {
     }
 
     loadRawData() {
-        let dateFormat = d3.time.format("%m/%d/%Y");
+        let dateParse = d3.timeParse("%m/%d/%Y");
 
         d3.csv(this.props.url)
           .row((d) => {
@@ -57,16 +59,17 @@ class H1BGraph extends Component {
                   return null;
               }
 
+              let [ city, USState ] = d['location'].split(',');
+
               return {employer: d.employer,
-                      submit_date: dateFormat.parse(d['submit date']),
-                      start_date: dateFormat.parse(d['start date']),
+                      submit_date: dateParse(d['submit date']),
+                      start_date: dateParse(d['start date']),
                       case_status: d['case status'],
                       job_title: d['job title'],
                       clean_job_title: this.cleanJobs(d['job title']),
-                      base_salary: Number(d['base salary']),
-                      salary_to: d['salary to'] ? Number(d['salary to']) : null,
-                      city: d.city,
-                      state: d.state};
+                      base_salary: Number(d['base salary'].replace(',', '')),
+                      city: city.trim(),
+                      state: USState.trim()};
           })
           .get((error, rows) => {
               if (error) {
@@ -89,7 +92,7 @@ class H1BGraph extends Component {
     render() {
         if (!this.state.rawData.length) {
             return (
-                <h2>Loading data about 81,000 H1B visas in the software industry</h2>
+                <h2>Loading data about 177,830 H1B visas in the software industry</h2>
             );
         }
 

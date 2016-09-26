@@ -1,7 +1,8 @@
 
 
 import React, { Component } from 'react';
-import d3 from 'd3';
+import { scaleLinear } from 'd3-scale';
+import { extent as d3extent } from 'd3-array';
 import _ from 'lodash';
 
 export default class Meta extends Component {
@@ -35,9 +36,9 @@ export default class Meta extends Component {
     getFormatter(data) {
         data || (data = this.props.data);
 
-        return d3.scale.linear()
-                 .domain(d3.extent(this.props.data,
-                                   function (d) { return d.base_salary; }))
+        return scaleLinear()
+                 .domain(d3extent(this.props.data,
+                                  function (d) { return d.base_salary; }))
                  .tickFormat();
     }
 }

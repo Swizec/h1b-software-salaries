@@ -1,0 +1,30 @@
+
+.histogram .bar rect {
+    fill: steelblue;
+    shape-rendering: crispEdges;
+}
+
+.histogram .bar text {
+    fill: #fff;
+    font: 12px sans-serif;
+}
+
+button {
+    margin-right: .5em;
+    margin-bottom: .3em !important;
+}
+
+.row {
+    margin-top: 1em;
+}
+
+.mean text {
+    font: 11px sans-serif;
+    fill: grey;
+}
+
+.mean path {
+    stroke-dasharray: 3;
+    stroke: grey;
+    stroke-width: 1px;
+}
