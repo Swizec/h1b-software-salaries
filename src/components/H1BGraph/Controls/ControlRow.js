@@ -9,7 +9,7 @@ class ControlRow extends Component {
         var toggleValues = this.state.toggleValues;
 
         toggleValues = _.mapValues(toggleValues,
-                                   (value, key) => newState && key == picked);
+                                   (value, key) => newState && key === picked);
 
         // if newState is false, we want to reset
         this.props.updateDataFilter(picked, !newState);
@@ -29,7 +29,7 @@ class ControlRow extends Component {
         if (hash.length) {
             let fromUrl = hash[this.props.hashPart];
 
-            if (fromUrl != '*' && fromUrl != '') {
+            if (fromUrl !== '*' && fromUrl !== '') {
                 this.makePick(fromUrl, true);
             }else{
                 // reset

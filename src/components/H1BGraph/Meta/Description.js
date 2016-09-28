@@ -9,27 +9,21 @@ import StatesMap from './StatesMap';
 
 
 class Description extends Meta {
-    getAllDataByYear(year, data) {
-        data || (data = this.props.allData);
-
+    getAllDataByYear(year, data = this.props.allData) {
         return data.filter(function (d) {
             return d.submit_date.getFullYear() === year;
         });
     }
 
-    getAllDataByJobTitle(jobTitle, data) {
-        data || (data = this.props.allData);
-
+    getAllDataByJobTitle(jobTitle, data = this.props.allData) {
         return data.filter(function (d) {
             return d.clean_job_title === jobTitle;
         });
     }
 
-    getAllDataByState(state, data) {
-        data || (data = this.props.allData);
-
+    getAllDataByState(state, data = this.props.allData) {
         return data.filter(function (d) {
-            return d.state == state;
+            return d.state === state;
         });
     }
 
@@ -61,15 +55,13 @@ class Description extends Meta {
             let states = this.getUSStates(),
                 jobTitles = this.getJobTitles();
 
-            if (jobTitles.length == 1) {
+            if (jobTitles.length === 1) {
                 lastYear = this.getAllDataByJobTitle(jobTitles[0], lastYear);
             }
 
-            if (states.length == 1) {
+            if (states.length === 1) {
                 lastYear = this.getAllDataByState(states[0], lastYear);
             }
-
-            let percent = ((this.props.data.length-lastYear.length)/this.props.data.length*100);
 
             if (this.props.data.length/lastYear.length > 2) {
                 fragment = ", "+(this.props.data.length/lastYear.length).toFixed()+" times more than the year before";
@@ -90,7 +82,7 @@ class Description extends Meta {
         if (jobTitles.length > 1) {
             fragment = "foreign nationals";
         }else{
-            if (jobTitles[0] == "other") {
+            if (jobTitles[0] === "other") {
                 fragment = "foreign nationals";
             }else{
                 fragment = "foreign software "+jobTitles[0]+"s";

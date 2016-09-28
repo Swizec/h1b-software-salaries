@@ -109,7 +109,7 @@ class H1BGraph extends Component {
 
         let onlyGoodVisas = this.state
                                 .rawData
-                                .filter((d) => d.case_status == "certified"),
+                                .filter((d) => d.case_status === "certified"),
             filteredData = onlyGoodVisas.filter(this.state.dataFilter);
 
         return (

@@ -1,5 +1,5 @@
 
-import React, { Component } from 'react';
+import React from 'react';
 import { mean as d3mean } from 'd3-array';
 import S from 'string';
 
@@ -42,7 +42,7 @@ class Title extends Meta {
         if (jobTitles.length > 1) {
             title = "H1B workers in the software industry";
         }else{
-            if (jobTitles[0] == "other") {
+            if (jobTitles[0] === "other") {
                 title = "Other H1B workers in the software industry";
             }else{
                 title = "Software "+jobTitles[0]+"s on an H1B";

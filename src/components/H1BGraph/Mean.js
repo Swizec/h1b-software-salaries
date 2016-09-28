@@ -22,9 +22,8 @@ class Mean extends Component {
 
     render() {
         var mean = d3.mean(this.props.data, this.props.value),
-            line = d3.line()
-            ([[0, 5],
-              [this.props.width, 5]]);
+            line = d3.line()([[0, 5],
+                              [this.props.width, 5]]);
 
         var translate = "translate(0, "+this.yScale(mean)+")",
             meanLabel = "Mean: $"+this.yScale.tickFormat()(mean);

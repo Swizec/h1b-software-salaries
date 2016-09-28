@@ -19,7 +19,7 @@ class Controls extends Component {
     }
 
     updateYearFilter(year, reset) {
-        let filter = (d) => d.submit_date.getFullYear() == year;
+        let filter = (d) => d.submit_date.getFullYear() === year;
 
         if (reset || !year) {
             filter = () => true;
@@ -31,7 +31,7 @@ class Controls extends Component {
     }
 
     updateJobTitleFilter(title, reset) {
-        var filter = (d) => d.clean_job_title == title;
+        var filter = (d) => d.clean_job_title === title;
 
         if (reset || !title) {
             filter = () => true;
@@ -43,7 +43,7 @@ class Controls extends Component {
     }
 
     updateStateFilter(state, reset) {
-        var filter = (d) => d.state == state;
+        var filter = (d) => d.state === state;
 
         if (reset || !state) {
             filter = () => true;
