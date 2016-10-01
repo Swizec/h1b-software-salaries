@@ -3,6 +3,7 @@
 
 from pyquery import PyQuery as pq
 import requests, csv
+from geopy.geocoders import GeoNames
 
 def download(url, year):
     d = pq(url=url)
@@ -37,9 +38,41 @@ def parse():
             for row in d("table tr"):
                 writer.writerow([cell(td) for td in d(row)("td")])
 
+def countynames():
+    geolocator = GeoNames(domain = 'ws.geonames.net',
+                          country_bias = 'United States',
+                          username = 'swizec',
+                          timeout = 20)
+
+    with open("h1bs-2012-2016.csv", "rb") as csvfile:
+        reader = csv.reader(csvfile)
+        with open("h1bs-2012-2016-cleaned.csv", "wb") as csvoutfile:
+            writer = csv.writer(csvoutfile)
+
+            writer.writerow(reader.next())
+
+            locations = {}
+
+            for row in reader:
+                if len(row) > 0:
+                    location = row[3] + ', united states'
+
+                    if location not in locations:
+                        cleaned = geolocator.geocode(location, True)
+                        if cleaned:
+                            locations[location] = cleaned.address.encode('utf8')
+                        else:
+                            locations[location] = location
+
+                    row[3] = locations[location]
+
+                    writer.writerow(row)
+                    print row
+
 if __name__ == "__main__":
     #for year in xrange(2012, 2017):
     #    print year
         #download("http://h1bdata.info/index.php?em=&job=software+*&year=%d" % year, year)
 
-    parse()
+    #parse()
+    countynames()
