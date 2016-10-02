@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 from pyquery import PyQuery as pq
-import requests, csv
+import requests, csv, urllib
 from geopy.geocoders import GeoNames
 
 def download(url, year):
@@ -38,7 +38,7 @@ def parse():
             for row in d("table tr"):
                 writer.writerow([cell(td) for td in d(row)("td")])
 
-def countynames():
+def cleannames():
     geolocator = GeoNames(domain = 'ws.geonames.net',
                           country_bias = 'United States',
                           username = 'swizec',
@@ -69,10 +69,55 @@ def countynames():
                     writer.writerow(row)
                     print row
 
+def countynames():
+    with open("h1bs-2012-2016-cleaned.csv", "rb") as csvfile:
+        reader = csv.reader(csvfile)
+        reader.next()
+        with open("h1bs-2012-2016-final.csv", "wb") as csvoutfile:
+            writer = csv.writer(csvoutfile)
+
+            writer.writerow(['employer',
+                             'job title',
+                             'base salary',
+                             'city',
+                             'county',
+                             'state',
+                             'submit date',
+                             'start date',
+                             'case status'])
+
+            counties = {}
+
+            for row in reader:
+                if len(row) > 0:
+                    location = row[3]
+
+                    if location not in counties:
+                        url = "http://geonames.net/search.html?q=%s&username=swizec" % location.replace(' ', '+').replace(',', '')
+
+                        d = pq(url)
+                        county = d('table.restable tr:eq(2) td:eq(2) small').text()
+                        counties[location] = county
+
+                    _location = location.split(',')
+
+                    outrow = [row[0],
+                                     row[1],
+                                     row[2],
+                                     _location[0].strip(),
+                                     counties[location],
+                                     _location[1],
+                                     row[4],
+                                     row[5],
+                                     row[6]]
+                    print outrow
+                    writer.writerow(outrow)
+
 if __name__ == "__main__":
     #for year in xrange(2012, 2017):
     #    print year
         #download("http://h1bdata.info/index.php?em=&job=software+*&year=%d" % year, year)
 
     #parse()
+    #cleannames()
     countynames()
