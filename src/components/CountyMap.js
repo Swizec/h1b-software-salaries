@@ -2,19 +2,38 @@
 import React, { Component } from 'react';
 import * as d3 from 'd3';
 import * as topojson from 'topojson';
+import _ from 'lodash';
 
-const County = ({ geoPath, feature }) => (
-    <path d={geoPath(feature)} />
-);
+const choropleth = [
+    'rgb(247,251,255)',
+    'rgb(222,235,247)',
+    'rgb(198,219,239)',
+    'rgb(158,202,225)',
+    'rgb(107,174,214)',
+    'rgb(66,146,198)',
+    'rgb(33,113,181)',
+    'rgb(8,81,156)',
+    'rgb(8,48,107)'
+];
+
+const County = ({ data, geoPath, feature, quantize }) => {
+    if (data) {
+        return (<path d={geoPath(feature)} style={{fill: choropleth[quantize(data.medianIncome)]}} />)
+    }else{
+        return (<path d={geoPath(feature)} style={{fill: 'rgb(240,240,240)'}} />);
+    }
+};
 
 class CountyMap extends Component {
     constructor(props) {
         super(props);
 
         this.projection = d3.geoAlbersUsa()
-                            .scale(1080);
+                            .scale(1280);
         this.geoPath = d3.geoPath()
                          .projection(this.projection);
+        this.quantize = d3.scaleQuantize()
+                          .range(d3.range(9));
 
         this.updateD3(props);
     }
@@ -25,6 +44,10 @@ class CountyMap extends Component {
 
     updateD3(props) {
         this.projection.translate([props.width / 2, props.height / 2]);
+
+        if (props.medianIncomes) {
+            this.quantize.domain([30000, 90000]);
+        }
     }
 
     render() {
@@ -37,7 +60,12 @@ class CountyMap extends Component {
 
             return (
                 <g>
-                    {counties.map((feature) => <County geoPath={this.geoPath} feature={feature} key={feature.id} />)}
+                    {counties.map((feature) => <County geoPath={this.geoPath}
+                        feature={feature}
+                        key={feature.id}
+                        quantize={this.quantize}
+                        data={_.find(this.props.medianIncomes, {countyId: feature.id})} />)}
+
                      <path d={this.geoPath(statesMesh)} style={{fill: 'none',
                                                                stroke: '#fff',
                                                                strokeLinejoin: 'round'}} />
