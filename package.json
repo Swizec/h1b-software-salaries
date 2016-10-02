@@ -12,7 +12,8 @@
     "react": "^15.3.2",
     "react-bootstrap": "^0.30.3",
     "react-dom": "^15.3.2",
-    "string": "^3.3.1"
+    "string": "^3.3.1",
+    "topojson": "^1.6.27"
   },
   "scripts": {
     "start": "react-scripts start",

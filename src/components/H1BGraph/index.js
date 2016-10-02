@@ -59,8 +59,6 @@ class H1BGraph extends Component {
                   return null;
               }
 
-              let [ city, USState ] = d['location'].split(',');
-
               return {employer: d.employer,
                       submit_date: dateParse(d['submit date']),
                       start_date: dateParse(d['start date']),
@@ -68,10 +66,12 @@ class H1BGraph extends Component {
                       job_title: d['job title'],
                       clean_job_title: this.cleanJobs(d['job title']),
                       base_salary: Number(d['base salary'].replace(',', '')),
-                      city: city.trim(),
-                      state: USState.trim()};
+                      city: d['city'],
+                      state: d['state'],
+                      county: d['county']};
           })
           .get((error, rows) => {
+              console.log('Gotten!');
               if (error) {
                   console.error(error);
                   console.error(error.stack);
