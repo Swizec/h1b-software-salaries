@@ -16,12 +16,16 @@ const choropleth = [
     'rgb(8,48,107)'
 ];
 
+const BlankColor = 'rgb(240,240,240)'
+
 const County = ({ data, geoPath, feature, quantize }) => {
+    let color = BlankColor;
+
     if (data) {
-        return (<path d={geoPath(feature)} style={{fill: choropleth[quantize(data.medianIncome)]}} />)
-    }else{
-        return (<path d={geoPath(feature)} style={{fill: 'rgb(240,240,240)'}} />);
+        color = choropleth[quantize(data.medianIncome)];
     }
+
+    return (<path d={geoPath(feature)} style={{fill: color}} title={feature.id} />)
 };
 
 class CountyMap extends Component {
@@ -46,7 +50,7 @@ class CountyMap extends Component {
         this.projection.translate([props.width / 2, props.height / 2]);
 
         if (props.medianIncomes) {
-            this.quantize.domain([30000, 90000]);
+            this.quantize.domain([10000, 75000]);
         }
     }
 
@@ -67,8 +71,8 @@ class CountyMap extends Component {
                         data={_.find(this.props.medianIncomes, {countyId: feature.id})} />)}
 
                      <path d={this.geoPath(statesMesh)} style={{fill: 'none',
-                                                               stroke: '#fff',
-                                                               strokeLinejoin: 'round'}} />
+                                                                stroke: '#fff',
+                                                                strokeLinejoin: 'round'}} />
                 </g>
             );
         }

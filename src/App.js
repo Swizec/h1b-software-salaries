@@ -13,27 +13,31 @@ const parseNumber = (n) => {
     return n;
 };
 
+const cleanIncomes = (d) => ({
+    countyName: d['Name'],
+    medianIncome: parseNumber(d['Median Household Income']),
+    lowerBound: parseNumber(d['90% CI Lower Bound']),
+    upperBound: parseNumber(d['90% CI Upper Bound'])
+});
+
 class App extends Component {
     state = {}
 
     componentWillMount() {
         d3.queue()
           .defer(d3.json, 'data/us.json')
-          .defer(d3.tsv, 'data/us-county-names.tsv')
-          .defer(d3.csv, 'data/county-median-incomes.csv')
+          .defer(d3.csv, 'data/us-county-names-normalized.csv')
+          .defer(d3.csv, 'data/county-median-incomes-normalized.csv', cleanIncomes)
           .await((error, us, countyNames, medianIncomes) => {
               countyNames = countyNames.map(({ id, name }) => ({id: Number(id),
-                                                                name: `${name} County`}));
+                                                                name: name}));
 
-
-              medianIncomes = medianIncomes.filter((d) => _.find(countyNames, {name: d['Name']}))
-                                           .map((d) => ({
-                                               countyId: _.find(countyNames, {name: d['Name']}).id,
-                                               countyName: d['Name'],
-                                               medianIncome: parseNumber(d['Median Household Income']),
-                                               lowerBound: parseNumber(d['90% CI Lower Bound']),
-                                               upperBound: parseNumber(d['90% CI Upper Bound'])
-                                           }));
+              medianIncomes = medianIncomes.filter(d => _.find(countyNames, {name: d['countyName']}))
+                                           .map((d) => {
+                                               d['countyId'] = _.find(countyNames,
+                                                                      {name: d['countyName']}).id;
+                                               return d;
+                                           });
 
               this.setState({usTopoJson: us,
                              countyNames: countyNames,
