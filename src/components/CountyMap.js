@@ -4,7 +4,7 @@ import * as d3 from 'd3';
 import * as topojson from 'topojson';
 import _ from 'lodash';
 
-const choropleth = [
+const ChoroplethColors = [
     'rgb(247,251,255)',
     'rgb(222,235,247)',
     'rgb(198,219,239)',
@@ -18,17 +18,23 @@ const choropleth = [
 
 const BlankColor = 'rgb(240,240,240)'
 
+// Combine array of colors and quantize scale to pick fill colo
+// Return a <path> element
 const County = ({ data, geoPath, feature, quantize }) => {
     let color = BlankColor;
 
     if (data) {
-        color = choropleth[quantize(data.medianIncome)];
+        color = ChoroplethColors[quantize(data.medianIncome)];
     }
 
     return (<path d={geoPath(feature)} style={{fill: color}} title={feature.id} />)
 };
 
 class CountyMap extends Component {
+    // Setup default D3 objects
+    // projection - defines our geo projection, how the map looks
+    // geoPath - calculates d attribute of <path> so it looks like a map
+    // quantize - threshold scale with 9 buckets
     constructor(props) {
         super(props);
 
@@ -42,10 +48,13 @@ class CountyMap extends Component {
         this.updateD3(props);
     }
 
+    // update D3 objects when props update
     componentWillReceiveProps(newProps) {
         this.updateD3(newProps);
     }
 
+    // Re-center the geo projection
+    // Update domain of quantize scale
     updateD3(props) {
         this.projection.translate([props.width / 2, props.height / 2]);
 
@@ -54,14 +63,19 @@ class CountyMap extends Component {
         }
     }
 
+    // If no data, do nothing (we might mount before data loads into props)
     render() {
         if (!this.props.usTopoJson) {
             return null;
         }else{
+            // Translate topojson data into geojson data for drawing
+            // Prepare a mesh for states and a list of features for counties
             const us = this.props.usTopoJson,
                   statesMesh = topojson.mesh(us, us.objects.states, (a, b) => a !== b),
                   counties = topojson.feature(us, us.objects.counties).features;
 
+            // Loop through counties and draw <County> components
+            // Add a single <path> for state borders
             return (
                 <g>
                     {counties.map((feature) => <County geoPath={this.geoPath}

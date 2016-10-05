@@ -267,7 +267,7 @@ Custer County,Custer1,CO,48.368,43.265,53.471
 Delta County,Delta1,CO,45.283,41.383,49.183
 Denver County,Denver1,CO,54.872,53.049,56.695
 Dolores County,Dolores1,CO,44.235,39.514,48.956
-Douglas County,Douglas1,CO,107.25,101.353,113.147
+Douglas County,Douglas1,CO,107.251,101.353,113.147
 Eagle County,Eagle1,CO,76.661,71.045,82.277
 Elbert County,Elbert1,CO,83.603,77.865,89.341
 El Paso County,El Paso1,CO,59.286,57.168,61.404
@@ -559,7 +559,6 @@ Worth County,Worth1,GA,40.382,36.894,43.87
 Hawaii,Hawaii1,GA,69.549,68.236,70.862
 Hawaii County,Hawaii2,HI,51.887,49.875,53.899
 Honolulu County,Honolulu1,HI,73.985,72.489,75.481
-Kalawao County,Kalawao1,HI,.,.,.
 Kauai County,Kauai1,HI,58.883,54.504,63.262
 Maui County,Maui1,HI,64.916,62.156,67.676
 Idaho,Idaho1,HI,47.572,46.434,48.71
@@ -3192,4 +3191,3 @@ Teton County,Teton3,WY,75.348,68.986,81.71
 Uinta County,Uinta1,WY,56.8,51.508,62.092
 Washakie County,Washakie1,WY,50.802,45.996,55.608
 Weston County,Weston1,WY,55.52,49.711,61.329
-,1,WY,,,

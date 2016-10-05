@@ -7,6 +7,12 @@ import CountyMap from './components/CountyMap';
 
 const parseNumber = (n) => {
     n = Number(n.replace('.', ''));
+    if (n < 100) {
+        n *= 1000;
+    }
+    if (n < 1000) {
+        n *= 10;
+    }
     if (n < 10000) {
         n *= 10;
     }
@@ -38,6 +44,13 @@ class App extends Component {
                                                                       {name: d['countyName']}).id;
                                                return d;
                                            });
+
+              console.log(d3.min(medianIncomes, d => d.medianIncome));
+              console.log(d3.max(medianIncomes, d => d.medianIncome));
+
+              console.log(medianIncomes.filter(d => d.medianIncome == 21658));
+              console.log(medianIncomes.filter(d => d.medianIncome == 125635));
+
 
               this.setState({usTopoJson: us,
                              countyNames: countyNames,
