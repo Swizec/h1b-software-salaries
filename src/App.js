@@ -5,6 +5,7 @@ import _ from 'lodash';
 // TODO: improve this structure
 import './components/H1BGraph/style.css';
 import Controls from './components/H1BGraph/Controls';
+import MedianLine from './components/MedianLine';
 
 import Histogram from './components/Histogram';
 import CountyMap from './components/CountyMap';
@@ -25,6 +26,7 @@ const parseNumber = (n) => {
 
 const cleanIncomes = (d) => ({
     countyName: d['Name'],
+    state: d['State'],
     medianIncome: parseNumber(d['Median Household Income']),
     lowerBound: parseNumber(d['90% CI Lower Bound']),
     upperBound: parseNumber(d['90% CI Upper Bound'])
@@ -97,6 +99,7 @@ class App extends Component {
               this.setState({usTopoJson: us,
                              countyNames: countyNames,
                              medianIncomes: medianIncomesMap,
+                             medianIncomesByState: _.groupBy(medianIncomes, 'state'),
                              techSalaries: techSalaries,
                              stateNames: stateNames});
           });
@@ -126,7 +129,7 @@ class App extends Component {
     render() {
         if (this.state.techSalaries.length < 1) {
             return (
-                <div className="App">
+                <div className="App container">
                     <h1>Loading a lot of data, please be patient 🤓</h1>
                 </div>);
         }
@@ -147,24 +150,31 @@ class App extends Component {
             value: (d) => d.base_salary
         };
 
-        let zoom = null;
+        let zoom = null,
+            medianHousehold = this.state.medianIncomesByState['US'][0].medianIncome;
+
         if (this.state.filteredBy.state != '*') {
             zoom = this.state.filteredBy.state;
+            medianHousehold = d3.mean(this.state.medianIncomesByState[zoom],
+                                      d => d.medianIncome);
         }
 
         return (
-            <div className="App">
-                <svg width="1000" height="500">
+            <div className="App container">
+                <svg width="1100" height="500">
                     <CountyMap usTopoJson={this.state.usTopoJson}
                                stateNames={this.state.stateNames}
                                values={countyValues}
                                width={params.width}
                                height={params.height}
                                zoom={zoom} />
-                    <rect x="500" y="0" width={params.width} height={params.height}
+                    <rect x="500" y="0" width={params.width+100} height={params.height}
                           style={{fill: 'white'}} />
                     <Histogram {...params} x={500} y={10}
                                data={filteredSalaries} />
+                    <MedianLine {...params} data={filteredSalaries} x={500} y={10}
+                                width={params.width+100}
+                                median={medianHousehold} />
                 </svg>
 
                 <Controls data={this.state.techSalaries} updateDataFilter={this.updateDataFilter.bind(this)} />
