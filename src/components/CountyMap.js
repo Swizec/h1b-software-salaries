@@ -4,7 +4,7 @@ import * as d3 from 'd3';
 import * as topojson from 'topojson';
 import _ from 'lodash';
 
-const ChoroplethColors = [
+const ChoroplethColors = _.reverse([
     'rgb(247,251,255)',
     'rgb(222,235,247)',
     'rgb(198,219,239)',
@@ -14,7 +14,7 @@ const ChoroplethColors = [
     'rgb(33,113,181)',
     'rgb(8,81,156)',
     'rgb(8,48,107)'
-];
+]);
 
 const BlankColor = 'rgb(240,240,240)'
 
@@ -24,7 +24,7 @@ const County = ({ data, geoPath, feature, quantize }) => {
     let color = BlankColor;
 
     if (data) {
-        color = ChoroplethColors[quantize(data.medianIncome)];
+        color = ChoroplethColors[quantize(data.value)];
     }
 
     return (<path d={geoPath(feature)} style={{fill: color}} title={feature.id} />)
@@ -58,8 +58,9 @@ class CountyMap extends Component {
     updateD3(props) {
         this.projection.translate([props.width / 2, props.height / 2]);
 
-        if (props.medianIncomes) {
-            this.quantize.domain([10000, 75000]);
+        if (props.values) {
+            this.quantize.domain([d3.quantile(props.values, 0.15, d => d.value),
+                                  d3.quantile(props.values, 0.85, d => d.value)]);
         }
     }
 
@@ -82,7 +83,7 @@ class CountyMap extends Component {
                         feature={feature}
                         key={feature.id}
                         quantize={this.quantize}
-                        data={_.find(this.props.medianIncomes, {countyId: feature.id})} />)}
+                        data={_.find(this.props.values, {countyID: feature.id})} />)}
 
                      <path d={this.geoPath(statesMesh)} style={{fill: 'none',
                                                                 stroke: '#fff',

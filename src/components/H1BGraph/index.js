@@ -18,69 +18,6 @@ class H1BGraph extends Component {
         };
     }
 
-    cleanJobs(title) {
-        title = title.replace(/[^a-z ]/gi, '');
-
-        if (title.match(/consultant|specialist|expert|prof|advis|consult/)) {
-            title = "consultant";
-        }else if (title.match(/analyst|strateg|scien/)) {
-            title = "analyst";
-        }else if (title.match(/manager|associate|train|manag|direct|supervis|mgr|chief/)) {
-            title = "manager";
-        }else if (title.match(/architect/)) {
-            title = "architect";
-        }else if (title.match(/lead|coord/)) {
-            title = "lead";
-        }else if (title.match(/eng|enig|ening|eign/)) {
-            title = "engineer";
-        }else if (title.match(/program/)) {
-            title = "programmer";
-        }else if (title.match(/design/)) {
-            title = "designer";
-        }else if (title.match(/develop|dvelop|develp|devlp|devel|deelop|devlop|devleo|deveo/)) {
-            title = "developer";
-        }else if (title.match(/tester|qa|quality|assurance|test/)) {
-            title = "tester";
-        }else if (title.match(/admin|support|packag|integrat/)) {
-            title = "administrator";
-        }else{
-            title = "other";
-        }
-
-        return title;
-    }
-
-    loadRawData() {
-        let dateParse = d3.timeParse("%m/%d/%Y");
-
-        d3.csv(this.props.url)
-          .row((d) => {
-              if (!d['base salary']) {
-                  return null;
-              }
-
-              return {employer: d.employer,
-                      submit_date: dateParse(d['submit date']),
-                      start_date: dateParse(d['start date']),
-                      case_status: d['case status'],
-                      job_title: d['job title'],
-                      clean_job_title: this.cleanJobs(d['job title']),
-                      base_salary: Number(d['base salary'].replace(',', '')),
-                      city: d['city'],
-                      state: d['state'],
-                      county: d['county']};
-          })
-          .get((error, rows) => {
-              console.log('Gotten!');
-              if (error) {
-                  console.error(error);
-                  console.error(error.stack);
-              }else{
-                  this.setState({rawData: rows});
-              }
-          });
-    }
-
     updateDataFilter(filter) {
         this.setState({dataFilter: filter});
     }
