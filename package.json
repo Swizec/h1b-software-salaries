@@ -5,6 +5,7 @@
   "devDependencies": {
     "react-scripts": "0.5.1"
   },
+    "homepage": "https://swizec.github.io/h1b-software-salaries",
   "dependencies": {
     "bootstrap": "^3.3.7",
     "d3": "^4.2.6",
