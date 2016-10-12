@@ -25,8 +25,7 @@ class Title extends Meta {
         var states = this.getUSStates(),
             title;
 
-
-        if (states.length > 1) {
+        if (states.length > 1 || states.length == 0) {
             title = "";
         }else{
             title = "in "+StatesMap[states[0].toUpperCase()];
@@ -37,15 +36,20 @@ class Title extends Meta {
 
     getJobTitleFragment() {
         var jobTitles = this.getJobTitles(),
+            years = this.getYears(),
             title;
 
         if (jobTitles.length > 1) {
-            title = "H1B workers in the software industry";
+            if (years.length > 1) {
+                title = "Individuals in tech outearn most households";
+            }else{
+                title = "Individuals in tech outearned most households";
+            }
         }else{
             if (jobTitles[0] === "other") {
-                title = "Other H1B workers in the software industry";
+                title = "Other techies";
             }else{
-                title = "Software "+jobTitles[0]+"s on an H1B";
+                title = "Software "+jobTitles[0]+"s";
             }
         }
 
@@ -54,7 +58,7 @@ class Title extends Meta {
 
     render() {
         var mean = d3mean(this.props.data,
-                          function (d) { return d.base_salary; }),
+                          (d) => d.base_salary),
             format = this.getFormatter();
 
         var
@@ -69,7 +73,7 @@ class Title extends Meta {
             );
         }else{
             title = (
-                <h2>{jobTitleFragment} {yearsFragment.length ? "made" : "make"} ${format(mean)}/year {stateFragment} {yearsFragment}</h2>
+                <h2>{jobTitleFragment} at ${format(mean)}/year {stateFragment} {yearsFragment}</h2>
             );
         }
 

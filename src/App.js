@@ -6,6 +6,7 @@ import _ from 'lodash';
 import './components/H1BGraph/style.css';
 import Controls from './components/H1BGraph/Controls';
 import MedianLine from './components/MedianLine';
+import { Title, Description, GraphDescription } from './components/H1BGraph/Meta';
 
 import Histogram from './components/Histogram';
 import CountyMap from './components/CountyMap';
@@ -161,6 +162,11 @@ class App extends Component {
 
         return (
             <div className="App container">
+                <Title data={filteredSalaries} />
+                <Description data={filteredSalaries} allData={this.state.techSalaries} />
+
+                <GraphDescription data={filteredSalaries} />
+
                 <svg width="1100" height="500">
                     <CountyMap usTopoJson={this.state.usTopoJson}
                                stateNames={this.state.stateNames}
