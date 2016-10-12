@@ -64,7 +64,10 @@ class Controls extends Component {
                 return (d) =>  filters.yearFilter(d)
                             && filters.jobTitleFilter(d)
                             && filters.stateFilter(d);
-            })(this.state)
+            })(this.state),
+            {state: this.state.state,
+             year: this.state.year,
+             jobTitle: this.state.jobTitle}
         );
     }
 

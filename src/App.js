@@ -62,7 +62,12 @@ class App extends Component {
         countyNames: [],
         medianIncomes: [],
         techSalaries: [],
-        salariesFilter: () => true
+        salariesFilter: () => true,
+        filteredBy: {
+            state: '*',
+            year: '*',
+            jobTitle: '*'
+        }
     }
 
     componentWillMount() {
@@ -113,8 +118,9 @@ class App extends Component {
         };
     }
 
-    updateDataFilter(filter) {
-        this.setState({salariesFilter: filter});
+    updateDataFilter(filter, filteredBy) {
+        this.setState({salariesFilter: filter,
+                       filteredBy: filteredBy});
     }
 
     render() {
@@ -141,6 +147,11 @@ class App extends Component {
             value: (d) => d.base_salary
         };
 
+        let zoom = null;
+        if (this.state.filteredBy.state != '*') {
+            zoom = this.state.filteredBy.state;
+        }
+
         return (
             <div className="App">
                 <svg width="1000" height="500">
@@ -149,7 +160,7 @@ class App extends Component {
                                values={countyValues}
                                width={params.width}
                                height={params.height}
-                               zoom={"CA"} />
+                               zoom={zoom} />
                     <rect x="500" y="0" width={params.width} height={params.height}
                           style={{fill: 'white'}} />
                     <Histogram {...params} x={500} y={10}
