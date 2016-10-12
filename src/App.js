@@ -186,6 +186,8 @@ class App extends Component {
                 </svg>
 
                 <Controls data={this.state.techSalaries} updateDataFilter={this.updateDataFilter.bind(this)} />
+
+                <small>Sources: 2014 US census data for median household incomes, <a href="http://h1bdata.info/">h1bdata.info</a> for tech salaries (filtered by "software")</small>
             </div>
         );
     }
