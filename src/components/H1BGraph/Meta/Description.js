@@ -134,6 +134,42 @@ class Description extends Meta {
         );
     }
 
+    getCountyFragment() {
+        const byCounty = _.groupBy(this.props.data, 'countyID'),
+              medians = this.props.medianIncomesByCounty;
+
+        let ordered = _.sortBy(_.keys(byCounty)
+                                .map(county => byCounty[county])
+                                .filter(d => d.length/this.props.data.length > 0.01),
+                               items => d3.mean(items, d => d.base_salary) - medians[items[0].countyID][0].medianIncome);
+
+        let best = ordered[ordered.length-1],
+            countyMedian = medians[best[0].countyID][0].medianIncome;
+
+        const byCity = _.groupBy(best, 'city');
+
+        ordered = _.sortBy(_.keys(byCity)
+                                .map(city => byCity[city])
+                                .filter(d => d.length/this.props.data.length > 0.01),
+                               items => d3.mean(items, d => d.base_salary) - countyMedian);
+
+        best = ordered[ordered.length-1];
+
+        const city = S(best[0].city).titleCase().s + `, ${best[0].state}`,
+              mean = d3.mean(best, d => d.base_salary);
+
+        const jobFragment = this.getJobTitleFragment()
+                                .replace("foreign nationals", "")
+                                .replace("foreign", "");
+
+
+        return (
+            <span>
+                The best city {jobFragment.length ? "for "+jobFragment : "to be a techie"} {this.getYearFragment().length ? "was" : "is"} <b>{city}</b> with an average individual salary <b>${this.getFormatter()(mean - countyMedian)} above household median</b>.
+            </span>
+        );
+    }
+
     render() {
         let formatter = this.getFormatter(),
             mean = d3.mean(this.props.data,
@@ -144,7 +180,7 @@ class Description extends Meta {
         let yearFragment = this.getYearFragment();
 
         return (
-            <p className="lead">{yearFragment.length ? yearFragment : "Since 2012"} the {this.getStateFragment()} software industry {yearFragment.length ? "gave" : "has given"} jobs to {formatter(this.props.data.length)} {this.getJobTitleFragment()}{this.getPreviousYearFragment()}. Most of them made between ${formatter(mean-deviation)} and ${formatter(mean+deviation)} per year. {this.getCityFragment()}</p>
+            <p className="lead">{yearFragment.length ? yearFragment : "Since 2012"} the {this.getStateFragment()} tech industry {yearFragment.length ? "gave" : "has employed"} {formatter(this.props.data.length)} {this.getJobTitleFragment()}{this.getPreviousYearFragment()}. Most of them made between ${formatter(mean-deviation)} and ${formatter(mean+deviation)} per year. {this.getCountyFragment()}</p>
         );
     }
 }

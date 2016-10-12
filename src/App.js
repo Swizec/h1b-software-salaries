@@ -100,6 +100,7 @@ class App extends Component {
               this.setState({usTopoJson: us,
                              countyNames: countyNames,
                              medianIncomes: medianIncomesMap,
+                             medianIncomesByCounty: _.groupBy(medianIncomes, 'countyName'),
                              medianIncomesByState: _.groupBy(medianIncomes, 'state'),
                              techSalaries: techSalaries,
                              stateNames: stateNames});
@@ -163,7 +164,8 @@ class App extends Component {
         return (
             <div className="App container">
                 <Title data={filteredSalaries} />
-                <Description data={filteredSalaries} allData={this.state.techSalaries} />
+                <Description data={filteredSalaries} allData={this.state.techSalaries}
+                             medianIncomesByCounty={this.state.medianIncomesByCounty} />
 
                 <GraphDescription data={filteredSalaries} />
 

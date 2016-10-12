@@ -31,7 +31,7 @@ class GraphDescription extends Meta {
             <div>
                 <div className="col-md-6 text-center">
                     <h3>Best places to be {jobTitleFragment}</h3>
-                    <small>Darker color means bigger difference between median household salary<br/>and individual tech salary.<br/></small>
+                    <small>Darker color means bigger difference between median household salary<br/>and individual tech salary. Gray means lack of tech salary data.</small>
                 </div>
                 <div className="col-md-6 text-center">
                     <h3>Salary distribution</h3>

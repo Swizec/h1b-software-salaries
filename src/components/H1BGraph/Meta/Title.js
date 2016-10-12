@@ -41,15 +41,15 @@ class Title extends Meta {
 
         if (jobTitles.length > 1) {
             if (years.length > 1) {
-                title = "Individuals in tech outearn most households";
+                title = "Tech immigrants outearn most households at";
             }else{
-                title = "Individuals in tech outearned most households";
+                title = "Tech immigrants outearned most households at";
             }
         }else{
             if (jobTitles[0] === "other") {
-                title = "Other techies";
+                title = "Other techie immigrants make";
             }else{
-                title = "Software "+jobTitles[0]+"s";
+                title = "Software "+jobTitles[0]+" immigrants make";
             }
         }
 
@@ -69,11 +69,11 @@ class Title extends Meta {
 
         if (yearsFragment && stateFragment) {
             title = (
-                <h2>{S(stateFragment).capitalize().s}, {jobTitleFragment} {yearsFragment.length ? "made" : "make"} ${format(mean)}/year {yearsFragment}</h2>
+                <h2>{S(stateFragment).capitalize().s}, {jobTitleFragment.replace(' make', '')} {yearsFragment.length ? "made" : "make"} ${format(mean)}/year {yearsFragment}</h2>
             );
         }else{
             title = (
-                <h2>{jobTitleFragment} at ${format(mean)}/year {stateFragment} {yearsFragment}</h2>
+                <h2>{jobTitleFragment} ${format(mean)}/year {stateFragment} {yearsFragment}</h2>
             );
         }
 
