@@ -2,7 +2,10 @@ import React, { Component } from 'react';
 import * as d3 from 'd3';
 import _ from 'lodash';
 
-import H1BGraph from './components/H1BGraph';
+// TODO: improve this structure
+import './components/H1BGraph/style.css';
+import Controls from './components/H1BGraph/Controls';
+
 import Histogram from './components/Histogram';
 import CountyMap from './components/CountyMap';
 
@@ -58,7 +61,8 @@ class App extends Component {
     state = {
         countyNames: [],
         medianIncomes: [],
-        techSalaries: []
+        techSalaries: [],
+        salariesFilter: () => true
     }
 
     componentWillMount() {
@@ -84,20 +88,18 @@ class App extends Component {
                            });
 
               techSalaries = techSalaries.filter(d => !_.isNull(d));
-              techSalariesMap = _.groupBy(techSalaries, 'countyID');
 
               this.setState({usTopoJson: us,
                              countyNames: countyNames,
                              medianIncomes: medianIncomesMap,
                              techSalaries: techSalaries,
-                             techSalariesMap: techSalariesMap,
                              stateNames: stateNames});
           });
     }
 
-    countyValue(county) {
+    countyValue(county, techSalariesMap) {
         const medianHousehold = this.state.medianIncomes[county.id],
-              salaries = this.state.techSalariesMap[county.name];
+              salaries = techSalariesMap[county.name];
 
         if (!medianHousehold || !salaries) {
             return null;
@@ -111,17 +113,27 @@ class App extends Component {
         };
     }
 
-    render() {
-        let countyValues = null;
+    updateDataFilter(filter) {
+        this.setState({salariesFilter: filter});
+    }
 
-        if (this.state.techSalaries.length > 0) {
-            countyValues = this.state.countyNames.map(
-                county => this.countyValue(county)
-            ).filter(d => !_.isNull(d));
+    render() {
+        if (this.state.techSalaries.length < 1) {
+            return (
+                <div className="App">
+                    <h1>Loading a lot of data, please be patient 🤓</h1>
+                </div>);
         }
 
+        const filteredSalaries = this.state.techSalaries.filter(this.state.salariesFilter),
+              filteredSalariesMap = _.groupBy(filteredSalaries, 'countyID');
+
+        const countyValues = this.state.countyNames.map(
+            county => this.countyValue(county, filteredSalariesMap)
+        ).filter(d => !_.isNull(d));
+
         const params = {
-            bins: 20,
+            bins: 10,
             width: 500,
             height: 500,
             axisMargin: 83,
@@ -138,11 +150,13 @@ class App extends Component {
                                width={params.width}
                                height={params.height}
                                zoom={"CA"} />
-            <rect x="500" y="0" width={params.width} height={params.height}
-                  style={{fill: 'white'}} />
+                    <rect x="500" y="0" width={params.width} height={params.height}
+                          style={{fill: 'white'}} />
                     <Histogram {...params} x={500} y={10}
-                               data={this.state.techSalaries} />
+                               data={filteredSalaries} />
                 </svg>
+
+                <Controls data={this.state.techSalaries} updateDataFilter={this.updateDataFilter.bind(this)} />
             </div>
         );
     }
