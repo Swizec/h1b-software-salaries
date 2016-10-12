@@ -56,7 +56,25 @@ class CountyMap extends Component {
     // Re-center the geo projection
     // Update domain of quantize scale
     updateD3(props) {
-        this.projection.translate([props.width / 2, props.height / 2]);
+        this.projection
+            .translate([props.width / 2, props.height / 2])
+            .scale(1280)
+
+        if (props.zoom && props.usTopoJson) {
+            const us = props.usTopoJson,
+                  statePaths = topojson.feature(us, us.objects.states).features,
+                  id = _.find(props.stateNames, {code: props.zoom}).id;
+
+            this.projection.scale(3500);
+
+            const centroid = this.geoPath.centroid(_.find(statePaths, {id: id})),
+                  translate = this.projection.translate();
+
+            this.projection.translate([
+                translate[0] - centroid[0] + props.width / 2,
+                translate[1] - centroid[1] + props.height / 2
+            ]);
+        }
 
         if (props.values) {
             this.quantize.domain([d3.quantile(props.values, 0.15, d => d.value),

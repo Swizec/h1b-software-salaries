@@ -47,6 +47,12 @@ const cleanSalary = (d) => {
     };
 }
 
+const cleanStateName = (d) => ({
+    code: d.code,
+    id: Number(d.id),
+    name: d.name
+});
+
 class App extends Component {
     state = {
         countyNames: [],
@@ -60,7 +66,8 @@ class App extends Component {
           .defer(d3.csv, 'data/us-county-names-normalized.csv')
           .defer(d3.csv, 'data/county-median-incomes-normalized.csv', cleanIncomes)
           .defer(d3.csv, 'data/h1bs-2012-2016-final-with-countyid.csv', cleanSalary)
-          .await((error, us, countyNames, medianIncomes, techSalaries) => {
+          .defer(d3.tsv, 'data/us-state-names.tsv', cleanStateName)
+          .await((error, us, countyNames, medianIncomes, techSalaries, stateNames) => {
               countyNames = countyNames.map(({ id, name }) => ({id: Number(id),
                                                                 name: name}));
 
@@ -82,7 +89,8 @@ class App extends Component {
                              countyNames: countyNames,
                              medianIncomes: medianIncomesMap,
                              techSalaries: techSalaries,
-                             techSalariesMap: techSalariesMap});
+                             techSalariesMap: techSalariesMap,
+                             stateNames: stateNames});
           });
     }
 
@@ -115,9 +123,11 @@ class App extends Component {
             <div className="App">
                 <svg width="1024" height="800">
                     <CountyMap usTopoJson={this.state.usTopoJson}
+                               stateNames={this.state.stateNames}
                                values={countyValues}
                                width={1024}
-                               height={800} />
+                               height={800}
+                               zoom={null} />
                 </svg>
             </div>
         );
