@@ -64,7 +64,7 @@ class Histogram extends Component {
 
         this.yScale
             .domain([0, d3.max(bars, (d) => d.x1)])
-            .range([0, props.height-props.topMargin-props.bottomMargin]);
+            .range([0, props.height-props.y-props.bottomMargin]);
     }
 
     makeBar(bar) {
@@ -83,7 +83,7 @@ class Histogram extends Component {
     }
 
     render() {
-        let translate = `translate(0, ${this.props.topMargin})`,
+        let translate = `translate(${this.props.x}, ${this.props.y})`,
             bars = this.histogram(this.props.data);
 
         return (

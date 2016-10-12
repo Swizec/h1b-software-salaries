@@ -9,21 +9,17 @@ import Controls from './Controls';
 import './style.css';
 
 class H1BGraph extends Component {
-    constructor() {
-        super();
+    constructor(props) {
+        super(props);
 
         this.state = {
-            rawData: [],
+            rawData: props.rawData,
             dataFilter: () => true
         };
     }
 
     updateDataFilter(filter) {
         this.setState({dataFilter: filter});
-    }
-
-    componentWillMount() {
-        this.loadRawData();
     }
 
     render() {

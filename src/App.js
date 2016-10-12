@@ -3,10 +3,11 @@ import * as d3 from 'd3';
 import _ from 'lodash';
 
 import H1BGraph from './components/H1BGraph';
+import Histogram from './components/Histogram';
 import CountyMap from './components/CountyMap';
 
 const parseNumber = (n) => {
-    n = Number(n.replace('.', ''));
+    n = Number(n.replace('.', '').replace(',', ''));
     if (n < 100) {
         n *= 1000;
     }
@@ -29,7 +30,7 @@ const cleanIncomes = (d) => ({
 const dateParse = d3.timeParse("%m/%d/%Y");
 
 const cleanSalary = (d) => {
-    if (!d['base salary']) {
+    if (!d['base salary'] || parseNumber(d['base salary']) > 300000) {
         return null;
     }
 
@@ -39,7 +40,7 @@ const cleanSalary = (d) => {
             case_status: d['case status'],
             job_title: d['job title'],
             clean_job_title: d['job title'],
-            base_salary: Number(d['base salary'].replace(',', '')),
+            base_salary: parseNumber(d['base salary']),
             city: d['city'],
             state: d['state'],
             county: d['county'],
@@ -119,15 +120,28 @@ class App extends Component {
             ).filter(d => !_.isNull(d));
         }
 
+        const params = {
+            bins: 20,
+            width: 500,
+            height: 500,
+            axisMargin: 83,
+            bottomMargin: 5,
+            value: (d) => d.base_salary
+        };
+
         return (
             <div className="App">
-                <svg width="1024" height="800">
+                <svg width="1000" height="500">
                     <CountyMap usTopoJson={this.state.usTopoJson}
                                stateNames={this.state.stateNames}
                                values={countyValues}
-                               width={1024}
-                               height={800}
-                               zoom={null} />
+                               width={params.width}
+                               height={params.height}
+                               zoom={"CA"} />
+            <rect x="500" y="0" width={params.width} height={params.height}
+                  style={{fill: 'white'}} />
+                    <Histogram {...params} x={500} y={10}
+                               data={this.state.techSalaries} />
                 </svg>
             </div>
         );
