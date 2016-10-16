@@ -150,8 +150,8 @@ class Description extends Meta {
 
         ordered = _.sortBy(_.keys(byCity)
                                 .map(city => byCity[city])
-                                .filter(d => d.length/this.props.data.length > 0.01),
-                               items => d3.mean(items, d => d.base_salary) - countyMedian);
+                                .filter(d => d.length/best.length > 0.01),
+                           items => d3.mean(items, d => d.base_salary) - countyMedian);
 
         best = ordered[ordered.length-1];
 
