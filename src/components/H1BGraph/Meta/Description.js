@@ -80,12 +80,12 @@ class Description extends Meta {
             fragment;
 
         if (jobTitles.length > 1) {
-            fragment = "foreign nationals";
+            fragment = "H1B work visas";
         }else{
             if (jobTitles[0] === "other") {
-                fragment = "foreign nationals";
+                fragment = "H1B work visas";
             }else{
-                fragment = "foreign software "+jobTitles[0]+"s";
+                fragment = `H1B work visas for software ${jobTitles[0]}s`;
             }
         }
 
@@ -103,35 +103,6 @@ class Description extends Meta {
         }
 
         return fragment;
-    }
-
-    getCityFragment() {
-        let byCity = _.groupBy(this.props.data, "city"),
-
-            ordered = _.sortBy(_.keys(byCity)
-                                .map(function (city) {
-                                    return byCity[city];
-                                })
-                                .filter(function (d) {
-                                    return d.length/this.props.data.length > 0.01;
-                                }.bind(this)),
-                               function (items) {
-                                   return d3.mean(items, (d) => d['base_salary']);
-                               }),
-            best = ordered[ordered.length-1],
-            mean = d3.mean(best, (d) => d['base_salary']);
-
-        let city = S(best[0].city).titleCase().s;
-
-        let jobFragment = this.getJobTitleFragment()
-                              .replace("foreign nationals", "")
-                              .replace("foreign", "");
-
-        return (
-            <span>
-                The best city {jobFragment.length ? "for "+jobFragment : "to be in"} {this.getYearFragment().length ? "was" : "is"} {city} with an average salary of ${this.getFormatter()(mean)}.
-            </span>
-        );
     }
 
     getCountyFragment() {
@@ -159,13 +130,14 @@ class Description extends Meta {
               mean = d3.mean(best, d => d.base_salary);
 
         const jobFragment = this.getJobTitleFragment()
-                                .replace("foreign nationals", "")
-                                .replace("foreign", "");
+                                .replace("H1B work visas for", "")
+                                .replace("H1B work visas", "");
 
+        console.log('fragment: ', jobFragment);
 
         return (
             <span>
-                The best city {jobFragment.length ? "for "+jobFragment : "to be a techie"} {this.getYearFragment().length ? "was" : "is"} <b>{city}</b> with an average individual salary <b>${this.getFormatter()(mean - countyMedian)} above household median</b>.
+                The best city {jobFragment.length ? `for ${jobFragment} on an H1B` : 'for an H1B'} {this.getYearFragment().length ? "was" : "is"} <b>{city}</b> with an average <b>individual salary ${this.getFormatter()(mean - countyMedian)} above median household income</b>. Median household income is a good proxy for cost of living in an area. <a href="https://en.wikipedia.org/wiki/Household_income">[1]</a>.
             </span>
         );
     }
@@ -180,7 +152,7 @@ class Description extends Meta {
         let yearFragment = this.getYearFragment();
 
         return (
-            <p className="lead">{yearFragment.length ? yearFragment : "Since 2012"} the {this.getStateFragment()} tech industry {yearFragment.length ? "gave" : "has employed"} {formatter(this.props.data.length)} {this.getJobTitleFragment()}{this.getPreviousYearFragment()}. Most of them made between ${formatter(mean-deviation)} and ${formatter(mean+deviation)} per year. {this.getCountyFragment()}</p>
+            <p className="lead">{yearFragment.length ? yearFragment : "Since 2012"} the {this.getStateFragment()} tech industry {yearFragment.length ? "sponsored" : "has sponsored"} {formatter(this.props.data.length)} {this.getJobTitleFragment()}{this.getPreviousYearFragment()}. Most of them paid <b>${formatter(mean-deviation)} to ${formatter(mean+deviation)}</b> per year (1 standard deviation). {this.getCountyFragment()}</p>
         );
     }
 }

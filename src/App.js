@@ -11,32 +11,20 @@ import { Title, Description, GraphDescription } from './components/H1BGraph/Meta
 import Histogram from './components/Histogram';
 import CountyMap from './components/CountyMap';
 
-const parseNumber = (n) => {
-    n = Number(n.replace('.', '').replace(',', ''));
-    if (n < 100) {
-        n *= 1000;
-    }
-    if (n < 1000) {
-        n *= 10;
-    }
-    if (n < 10000) {
-        n *= 10;
-    }
-    return n;
-};
+import PreloaderImg from './preloading.png';
 
 const cleanIncomes = (d) => ({
     countyName: d['Name'],
     state: d['State'],
-    medianIncome: parseNumber(d['Median Household Income']),
-    lowerBound: parseNumber(d['90% CI Lower Bound']),
-    upperBound: parseNumber(d['90% CI Upper Bound'])
+    medianIncome: Number(d['Median Household Income']),
+    lowerBound: Number(d['90% CI Lower Bound']),
+    upperBound: Number(d['90% CI Upper Bound'])
 });
 
 const dateParse = d3.timeParse("%m/%d/%Y");
 
 const cleanSalary = (d) => {
-    if (!d['base salary'] || parseNumber(d['base salary']) > 300000) {
+    if (!d['base salary'] || Number(d['base salary']) > 300000) {
         return null;
     }
 
@@ -46,7 +34,7 @@ const cleanSalary = (d) => {
             case_status: d['case status'],
             job_title: d['job title'],
             clean_job_title: d['job title'],
-            base_salary: parseNumber(d['base salary']),
+            base_salary: Number(d['base salary']),
             city: d['city'],
             state: d['state'],
             county: d['county'],
@@ -59,6 +47,15 @@ const cleanStateName = (d) => ({
     id: Number(d.id),
     name: d.name
 });
+
+const Preloader = () => (
+    <div className="App container">
+        <h1>The average H1B in tech pays $86,164/year</h1>
+        <p className="lead">Since 2012 the US tech industry has sponsored 176,075 H1B work visas. Most of them paid <b>$60,660 to $111,668</b> per year (1 standard deviation). <span>The best city for an H1B is <b>Kirkland, WA</b> with an average individual salary <b>$39,465 above local household median</b>. Median household salary is a good proxy for cost of living in an area.</span></p>
+        <img src={PreloaderImg} style={{width: '100%'}} />
+        <h2 className="text-center">Loading data ...</h2>
+    </div>
+);
 
 class App extends Component {
     state = {
@@ -77,8 +74,8 @@ class App extends Component {
         d3.queue()
           .defer(d3.json, 'data/us.json')
           .defer(d3.csv, 'data/us-county-names-normalized.csv')
-          .defer(d3.csv, 'data/county-median-incomes-normalized.csv', cleanIncomes)
-          .defer(d3.csv, 'data/h1bs-2012-2016-final-with-countyid.csv', cleanSalary)
+          .defer(d3.csv, 'data/county-median-incomes.csv', cleanIncomes)
+          .defer(d3.csv, 'data/h1bs-2012-2016.csv', cleanSalary)
           .defer(d3.tsv, 'data/us-state-names.tsv', cleanStateName)
           .await((error, us, countyNames, medianIncomes, techSalaries, stateNames) => {
               countyNames = countyNames.map(({ id, name }) => ({id: Number(id),
@@ -131,9 +128,8 @@ class App extends Component {
     render() {
         if (this.state.techSalaries.length < 1) {
             return (
-                <div className="App container">
-                    <h1>Loading a lot of data, please be patient 🤓</h1>
-                </div>);
+                <Preloader />
+            );
         }
 
         const filteredSalaries = this.state.techSalaries.filter(this.state.salariesFilter),
@@ -192,7 +188,5 @@ class App extends Component {
         );
     }
 }
-
-/* <H1BGraph url="data/h1bs-2012-2016-final-cleaned.csv" /> */
 
 export default App;

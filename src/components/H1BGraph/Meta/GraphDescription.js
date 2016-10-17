@@ -35,7 +35,7 @@ class GraphDescription extends Meta {
                 </div>
                 <div className="col-md-6 text-center">
                     <h3>Salary distribution</h3>
-                    <small>Histogram shows tech salary distribution compared to median household income.</small>
+                    <small>Histogram shows tech salary distribution compared to median household income, which is a good proxy for cost of living.</small>
                 </div>
             </div>
         )
