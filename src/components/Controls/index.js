@@ -11,9 +11,9 @@ class Controls extends Component {
         this.state = {
             yearFilter: () => true,
             jobTitleFilter: () => true,
-            stateFilter: () => true,
+            USstateFilter: () => true,
             year: '*',
-            state: '*',
+            USstate: '*',
             jobTitle: '*'
         };
     }
@@ -42,30 +42,30 @@ class Controls extends Component {
                        jobTitle: title});
     }
 
-    updateStateFilter(state, reset) {
-        var filter = (d) => d.state === state;
+    updateUSStateFilter(USstate, reset) {
+        var filter = (d) => d.USstate === USstate;
 
-        if (reset || !state) {
+        if (reset || !USstate) {
             filter = () => true;
-            state = '*';
+            USstate = '*';
         }
 
-        this.setState({stateFilter: filter,
-                       state: state});
+        this.setState({USstateFilter: filter,
+                       USstate: USstate});
     }
 
     componentDidUpdate() {
         window.location.hash = [this.state.year || '*',
-                                this.state.state || '*',
+                                this.state.USstate || '*',
                                 this.state.jobTitle || '*'].join("-");
 
         this.props.updateDataFilter(
             ((filters) => {
                 return (d) =>  filters.yearFilter(d)
                             && filters.jobTitleFilter(d)
-                            && filters.stateFilter(d);
+                            && filters.USstateFilter(d);
             })(this.state),
-            {state: this.state.state,
+            {USstate: this.state.USstate,
              year: this.state.year,
              jobTitle: this.state.jobTitle}
         );
@@ -83,7 +83,7 @@ class Controls extends Component {
         let getJobTitles = (data) => _.keys(_.groupBy(data, (d) => d.clean_job_title));
 
 
-        let getStates = (data) => _.sortBy(_.keys(_.groupBy(data, (d) => d.state)));
+        let getUSStates = (data) => _.sortBy(_.keys(_.groupBy(data, (d) => d.USstate)));
 
 
         return (
@@ -99,9 +99,9 @@ class Controls extends Component {
                             updateDataFilter={this.updateJobTitleFilter.bind(this)} />
 
                 <ControlRow data={this.props.data}
-                            getToggleNames={getStates}
+                            getToggleNames={getUSStates}
                             hashPart="1"
-                            updateDataFilter={this.updateStateFilter.bind(this)}
+                            updateDataFilter={this.updateUSStateFilter.bind(this)}
                             capitalize="true" />
             </div>
         )

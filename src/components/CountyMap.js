@@ -58,12 +58,12 @@ class CountyMap extends Component {
     updateD3(props) {
         this.projection
             .translate([props.width / 2, props.height / 2])
-            .scale(props.width*1.3)
+            .scale(props.width*1.3);
 
         if (props.zoom && props.usTopoJson) {
             const us = props.usTopoJson,
                   statePaths = topojson.feature(us, us.objects.states).features,
-                  id = _.find(props.stateNames, {code: props.zoom}).id;
+                  id = _.find(props.USstateNames, {code: props.zoom}).id;
 
             this.projection.scale(props.width*4.5);
 
