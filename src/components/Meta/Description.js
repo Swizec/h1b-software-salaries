@@ -1,15 +1,14 @@
 
-import React from 'react';
+import React, { Component } from 'react';
 import { scaleLinear } from 'd3-scale';
 import { mean as d3mean, extent as d3extent, deviation as d3deviation } from 'd3-array';
 import _ from 'lodash';
 import S from 'string';
 
-import Meta from './BaseComponent';
 import USStatesMap from './USStatesMap';
 
 
-class Description extends Meta {
+class Description extends Component {
     allDataForYear(year, data = this.props.allData) {
         return data.filter(d => d.submit_date.getFullYear() === year);
     }
