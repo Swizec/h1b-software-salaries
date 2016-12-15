@@ -48,7 +48,7 @@ class Description extends Component {
 
 
             if (jobTitle !== '*') {
-                lastYear = this.dataForJobTitle(jobTitle, lastYear);
+                lastYear = this.allDataForJobTitle(jobTitle, lastYear);
             }
 
             if (USstate !== '*') {
@@ -114,7 +114,7 @@ class Description extends Component {
 
         return (
             <span>
-                The best city {jobFragment.length ? `for ${jobFragment} on an H1B` : 'for an H1B'} {this.getYearFragment().length ? "was" : "is"} <b>{city}</b> with an average <b>individual salary ${this.getFormatter()(mean - countyMedian)} above median household income</b>. Median household income is a good proxy for cost of living in an area. <a href="https://en.wikipedia.org/wiki/Household_income">[1]</a>.
+                The best city {jobFragment.length ? `for ${jobFragment} on an H1B` : 'for an H1B'} {this.yearFragment ? "was" : "is"} <b>{city}</b> with an average <b>individual salary ${this.format(mean - countyMedian)} above median household income</b>. Median household income is a good proxy for cost of living in an area. <a href="https://en.wikipedia.org/wiki/Household_income">[1]</a>.
             </span>
         );
     }
