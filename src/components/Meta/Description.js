@@ -1,6 +1,7 @@
 
 import React from 'react';
-import * as d3 from 'd3';
+import { scaleLinear } from 'd3-scale';
+import { mean as d3mean, extent as d3extent, deviation as d3deviation } from 'd3-array';
 import _ from 'lodash';
 import S from 'string';
 
@@ -9,64 +10,56 @@ import USStatesMap from './USStatesMap';
 
 
 class Description extends Meta {
-    getAllDataByYear(year, data = this.props.allData) {
-        return data.filter(function (d) {
-            return d.submit_date.getFullYear() === year;
-        });
+    allDataForYear(year, data = this.props.allData) {
+        return data.filter(d => d.submit_date.getFullYear() === year);
     }
 
-    getAllDataByJobTitle(jobTitle, data = this.props.allData) {
-        return data.filter(function (d) {
-            return d.clean_job_title === jobTitle;
-        });
+    allDataForJobTitle(jobTitle, data = this.props.allData) {
+        return data.filter(d => d.clean_job_title === jobTitle);
     }
 
-    getAllDataByState(state, data = this.props.allData) {
-        return data.filter(function (d) {
-            return d.state === state;
-        });
+    allDataForUSstate(USstate, data = this.props.allData) {
+        return data.filter(d => d.USstate === USstate);
     }
 
-    getYearFragment() {
-        let years = this.getYears(),
-            fragment;
+    get yearsFragment() {
+        const year = this.props.filteredBy.year;
 
-        if (years.length > 1) {
+        return year === '*' ? "" : `In ${year}`;
+    }
+
+    get USstateFragment() {
+        const USstate = this.props.filteredBy.USstate;
+
+        return USstate === '*' ? "" : USStatesMap[USstate.toUpperCase()];
+    }
+
+    get previousYearFragment() {
+        const year = this.props.filteredBy.year;
+
+        let fragment;
+
+        if (year === '*') {
+            fragment = "";
+        }else if (year === 2012) {
             fragment = "";
         }else{
-            fragment = "In "+years[0];
-        }
+            const { USstate, jobTitle } = this.props.filteredBy;
+            let lastYear = this.allDataForYear(year-1);
 
-        return fragment;
-    }
 
-    getPreviousYearFragment() {
-        let years = this.getYears().map(Number),
-            fragment;
-
-        if (years.length > 1) {
-            fragment = "";
-        }else if (years[0] === 2012) {
-            fragment = "";
-        }else{
-            let year = years[0],
-                lastYear = this.getAllDataByYear(year-1);
-
-            let states = this.getUSStates(),
-                jobTitles = this.getJobTitles();
-
-            if (jobTitles.length === 1) {
-                lastYear = this.getAllDataByJobTitle(jobTitles[0], lastYear);
+            if (jobTitle !== '*') {
+                lastYear = this.dataForJobTitle(jobTitle, lastYear);
             }
 
-            if (states.length === 1) {
-                lastYear = this.getAllDataByState(states[0], lastYear);
+            if (USstate !== '*') {
+                lastYear = this.allDataForUSstate(USstate, lastYear);
             }
 
             if (this.props.data.length/lastYear.length > 2) {
                 fragment = ", "+(this.props.data.length/lastYear.length).toFixed()+" times more than the year before";
             }else{
-                let percent = ((1-lastYear.length/this.props.data.length)*100).toFixed();
+                const percent = ((1-lastYear.length/this.props.data.length)*100).toFixed();
 
                 fragment = ", "+Math.abs(percent)+"% "+(percent > 0 ? "more" : "less")+" than the year before";
             }
@@ -75,44 +68,31 @@ class Description extends Meta {
         return fragment;
     }
 
-    getJobTitleFragment() {
-        let jobTitles = this.getJobTitles(),
-            fragment;
+    get jobTitleFragment() {
+        const jobTitle = this.props.filteredBy.jobTitle;
+        let fragment;
 
-        if (jobTitles.length > 1) {
+        if (jobTitle === '*') {
             fragment = "H1B work visas";
         }else{
-            if (jobTitles[0] === "other") {
+            if (jobTitle === "other") {
                 fragment = "H1B work visas";
             }else{
-                fragment = `H1B work visas for software ${jobTitles[0]}s`;
+                fragment = `H1B work visas for software ${jobTitle}s`;
             }
         }
 
         return fragment;
     }
 
-    getStateFragment() {
-        let states = this.getUSStates(),
-            fragment;
-
-        if (states.length > 1) {
-            fragment = "US";
-        }else{
-            fragment = USStatesMap[states[0].toUpperCase()];
-        }
-
-        return fragment;
-    }
-
-    getCountyFragment() {
+    get countyFragment() {
         const byCounty = _.groupBy(this.props.data, 'countyID'),
               medians = this.props.medianIncomesByCounty;
 
         let ordered = _.sortBy(_.keys(byCounty)
                                 .map(county => byCounty[county])
                                 .filter(d => d.length/this.props.data.length > 0.01),
-                               items => d3.mean(items, d => d.base_salary) - medians[items[0].countyID][0].medianIncome);
+                               items => d3mean(items, d => d.base_salary) - medians[items[0].countyID][0].medianIncome);
 
         let best = ordered[ordered.length-1],
             countyMedian = medians[best[0].countyID][0].medianIncome;
@@ -122,18 +102,16 @@ class Description extends Meta {
         ordered = _.sortBy(_.keys(byCity)
                                 .map(city => byCity[city])
                                 .filter(d => d.length/best.length > 0.01),
-                           items => d3.mean(items, d => d.base_salary) - countyMedian);
+                           items => d3mean(items, d => d.base_salary) - countyMedian);
 
         best = ordered[ordered.length-1];
 
         const city = S(best[0].city).titleCase().s + `, ${best[0].state}`,
-              mean = d3.mean(best, d => d.base_salary);
+              mean = d3mean(best, d => d.base_salary);
 
-        const jobFragment = this.getJobTitleFragment()
+        const jobFragment = this.jobTitleFragment
                                 .replace("H1B work visas for", "")
                                 .replace("H1B work visas", "");
-
-        console.log('fragment: ', jobFragment);
 
         return (
             <span>
@@ -142,17 +120,19 @@ class Description extends Meta {
         );
     }
 
-    render() {
-        let formatter = this.getFormatter(),
-            mean = d3.mean(this.props.data,
-                           function (d) { return d.base_salary; }),
-            deviation = d3.deviation(this.props.data,
-                                     function (d) { return d.base_salary; });
+    get format() {
+        return scaleLinear()
+                 .domain(d3extent(this.props.data, d => d.base_salary))
+                 .tickFormat();
+    }
 
-        let yearFragment = this.getYearFragment();
+    render() {
+        const format = this.format,
+              mean = format(d3mean(this.props.data, d => d.base_salary)),
+              deviation = d3deviation(this.props.data, d => d.base_salary);
 
         return (
-            <p className="lead">{yearFragment.length ? yearFragment : "Since 2012"} the {this.getStateFragment()} tech industry {yearFragment.length ? "sponsored" : "has sponsored"} {formatter(this.props.data.length)} {this.getJobTitleFragment()}{this.getPreviousYearFragment()}. Most of them paid <b>${formatter(mean-deviation)} to ${formatter(mean+deviation)}</b> per year (1 standard deviation). {this.getCountyFragment()}</p>
+            <p className="lead">{this.yearsFragment ? this.yearsFragment : "Since 2012"} the {this.UStateFragment} tech industry {this.yearsFragment ? "sponsored" : "has sponsored"} {format(this.props.data.length)} {this.jobTitleFragment}{this.previousYearFragment}. Most of them paid <b>${format(mean-deviation)} to ${format(mean+deviation)}</b> per year (1 standard deviation). {this.countyFragment}</p>
         );
     }
 }

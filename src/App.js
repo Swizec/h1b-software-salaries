@@ -88,7 +88,8 @@ class App extends Component {
                 <Title data={filteredSalaries} filteredBy={this.state.filteredBy} />
                 <Description data={filteredSalaries}
                              allData={this.state.techSalaries}
-                             medianIncomesByCounty={this.state.medianIncomesByCounty} />
+                             medianIncomesByCounty={this.state.medianIncomesByCounty}
+                             filteredBy={this.state.filteredBy} />
 
                 <GraphDescription data={filteredSalaries} />
 
