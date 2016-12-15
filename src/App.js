@@ -91,7 +91,8 @@ class App extends Component {
                              medianIncomesByCounty={this.state.medianIncomesByCounty}
                              filteredBy={this.state.filteredBy} />
 
-                <GraphDescription data={filteredSalaries} />
+                <GraphDescription data={filteredSalaries}
+                                  filteredBy={this.state.filteredBy} />
 
                 <svg width="1100" height="500">
                     <CountyMap usTopoJson={this.state.usTopoJson}
