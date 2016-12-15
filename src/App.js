@@ -1,8 +1,6 @@
 import React, { Component } from 'react';
 import * as d3 from 'd3';
 import _ from 'lodash';
-
-// TODO: improve this structure
 import './style.css';
 
 import Controls from './components/Controls';
@@ -79,7 +77,7 @@ class App extends Component {
         let zoom = null,
             medianHousehold = this.state.medianIncomesByUSState['US'][0].medianIncome;
 
-        if (this.state.filteredBy.USstate != '*') {
+        if (this.state.filteredBy.USstate !== '*') {
             zoom = this.state.filteredBy.USstate;
             medianHousehold = d3.mean(this.state.medianIncomesByUSState[zoom],
                                       d => d.medianIncome);
@@ -87,7 +85,7 @@ class App extends Component {
 
         return (
             <div className="App container">
-                <Title data={filteredSalaries} />
+                <Title data={filteredSalaries} filteredBy={this.state.filteredBy} />
                 <Description data={filteredSalaries}
                              allData={this.state.techSalaries}
                              medianIncomesByCounty={this.state.medianIncomesByCounty} />

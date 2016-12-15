@@ -5,7 +5,7 @@ import _ from 'lodash';
 import S from 'string';
 
 import Meta from './BaseComponent';
-import StatesMap from './StatesMap';
+import USStatesMap from './USStatesMap';
 
 
 class Description extends Meta {
@@ -99,7 +99,7 @@ class Description extends Meta {
         if (states.length > 1) {
             fragment = "US";
         }else{
-            fragment = StatesMap[states[0].toUpperCase()];
+            fragment = USStatesMap[states[0].toUpperCase()];
         }
 
         return fragment;
