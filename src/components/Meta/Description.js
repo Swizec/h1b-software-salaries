@@ -99,13 +99,13 @@ class Description extends Component {
         const byCity = _.groupBy(best, 'city');
 
         ordered = _.sortBy(_.keys(byCity)
-                                .map(city => byCity[city])
-                                .filter(d => d.length/best.length > 0.01),
+                            .map(city => byCity[city])
+                            .filter(d => d.length/best.length > 0.01),
                            items => d3mean(items, d => d.base_salary) - countyMedian);
 
         best = ordered[ordered.length-1];
 
-        const city = S(best[0].city).titleCase().s + `, ${best[0].state}`,
+        const city = S(best[0].city).titleCase().s + `, ${best[0].USstate}`,
               mean = d3mean(best, d => d.base_salary);
 
         const jobFragment = this.jobTitleFragment
@@ -114,7 +114,7 @@ class Description extends Component {
 
         return (
             <span>
-                The best city {jobFragment.length ? `for ${jobFragment} on an H1B` : 'for an H1B'} {this.yearFragment ? "was" : "is"} <b>{city}</b> with an average <b>individual salary ${this.format(mean - countyMedian)} above median household income</b>. Median household income is a good proxy for cost of living in an area. <a href="https://en.wikipedia.org/wiki/Household_income">[1]</a>.
+                The best city {jobFragment.length ? `for ${jobFragment} on an H1B` : 'for an H1B'} {this.yearFragment ? "was" : "is"} <b>{city}</b> with an average  salary ${this.format(mean - countyMedian)} above the local household median. Median household income is a good proxy for cost of living in an area. <a href="https://en.wikipedia.org/wiki/Household_income">[1]</a>.
             </span>
         );
     }
@@ -127,11 +127,13 @@ class Description extends Component {
 
     render() {
         const format = this.format,
-              mean = format(d3mean(this.props.data, d => d.base_salary)),
+              mean = d3mean(this.props.data, d => d.base_salary),
               deviation = d3deviation(this.props.data, d => d.base_salary);
 
         return (
-            <p className="lead">{this.yearsFragment ? this.yearsFragment : "Since 2012"} the {this.UStateFragment} tech industry {this.yearsFragment ? "sponsored" : "has sponsored"} {format(this.props.data.length)} {this.jobTitleFragment}{this.previousYearFragment}. Most of them paid <b>${format(mean-deviation)} to ${format(mean+deviation)}</b> per year (1 standard deviation). {this.countyFragment}</p>
+            <p className="lead">
+                {this.yearsFragment ? this.yearsFragment : "Since 2012"} the {this.UStateFragment} tech industry {this.yearsFragment ? "sponsored" : "has sponsored"} <b>{format(this.props.data.length)} {this.jobTitleFragment}</b>{this.previousYearFragment}. Most of them paid <b>${format(mean-deviation)} to ${format(mean+deviation)}</b> per year. {this.countyFragment}
+            </p>
         );
     }
 }
