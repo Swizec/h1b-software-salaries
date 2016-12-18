@@ -9,14 +9,14 @@ class Axis extends Component {
         this.axis = d3.axisLeft()
                       .tickFormat((d) => "$"+d3.format(".2s")(d));
 
-        this.update_d3(props);
+        this.updateD3(props);
     }
 
     componentWillReceiveProps(newProps) {
-        this.update_d3(newProps);
+        this.updateD3(newProps);
     }
 
-    update_d3(props) {
+    updateD3(props) {
         this.axis
             .scale(props.scale)
             .ticks(props.data.length);

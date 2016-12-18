@@ -21,7 +21,7 @@ class ControlRow extends Component {
         let hash = window.location.hash.replace('#', '').split("-");
         hash[0] = hash[0] != '*' ? Number(hash[0]) : '*';
 
-        let toggles = this.props.getToggleNames(this.props.data),
+        let toggles = this.props.toggleNames,
             toggleValues = _.zipObject(toggles,
                                        toggles.map(() => false));
 
@@ -60,9 +60,8 @@ class ControlRow extends Component {
         return (
             <div className="row">
                 <div className="col-md-12">
-                    {this.props
-                         .getToggleNames(this.props.data)
-                         .map((name) => this._addToggle(name))}
+                    {this.props.toggleNames
+                         .map(name => this._addToggle(name))}
                 </div>
             </div>
         );

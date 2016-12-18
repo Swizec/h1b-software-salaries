@@ -43,20 +43,20 @@ class Histogram extends Component {
         this.widthScale = d3.scaleLinear();
         this.yScale = d3.scaleLinear();
 
-        this.update_d3(props);
+        this.updateD3(props);
     }
 
     componentWillReceiveProps(newProps) {
-        this.update_d3(newProps);
+        this.updateD3(newProps);
     }
 
-    update_d3(props) {
+    updateD3(props) {
         this.histogram
             .thresholds(props.bins)
             .value(props.value);
 
-        let bars = this.histogram(props.data),
-            counts = bars.map((d) => d.length);
+        const bars = this.histogram(props.data),
+              counts = bars.map((d) => d.length);
 
         this.widthScale
             .domain([d3.min(counts), d3.max(counts)])
@@ -83,8 +83,8 @@ class Histogram extends Component {
     }
 
     render() {
-        let translate = `translate(${this.props.x}, ${this.props.y})`,
-            bars = this.histogram(this.props.data);
+        const translate = `translate(${this.props.x}, ${this.props.y})`,
+              bars = this.histogram(this.props.data);
 
         return (
             <g className="histogram" transform={translate}>

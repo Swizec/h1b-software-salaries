@@ -76,33 +76,32 @@ class Controls extends Component {
     }
 
     render() {
-        let getYears = (data) => _.keys(_.groupBy(data,
-                                                  (d) => d.submit_date.getFullYear()))
-                                  .map(Number);
+        const data = this.props.data;
 
-        let getJobTitles = (data) => _.keys(_.groupBy(data, (d) => d.clean_job_title));
+        const years = new Set(data.map(d => d.submit_date.getFullYear())),
+              jobTitles = new Set(data.map(d => d.clean_job_title)),
+              USstates = new Set(data.map(d => d.USstate));
 
-
-        let getUSStates = (data) => _.sortBy(_.keys(_.groupBy(data, (d) => d.USstate)));
-
+        console.log(Array.from(jobTitles.values()));
 
         return (
             <div>
-                <ControlRow data={this.props.data}
-                            getToggleNames={getYears}
+                <ControlRow data={data}
+                            toggleNames={Array.from(years.values())}
                             hashPart="0"
                             updateDataFilter={this.updateYearFilter.bind(this)} />
 
-                <ControlRow data={this.props.data}
-                            getToggleNames={getJobTitles}
-                            hashPart="2"
-                            updateDataFilter={this.updateJobTitleFilter.bind(this)} />
+                 <ControlRow data={data}
+                             getToggleNames={Array.from(jobTitles.values())}
+                             hashPart="2"
+                             updateDataFilter={this.updateJobTitleFilter.bind(this)} />
 
-                <ControlRow data={this.props.data}
-                            getToggleNames={getUSStates}
-                            hashPart="1"
-                            updateDataFilter={this.updateUSStateFilter.bind(this)}
-                            capitalize="true" />
+                 <ControlRow data={data}
+                             getToggleNames={Array.from(USstates.values())}
+                             hashPart="1"
+                             updateDataFilter={this.updateUSStateFilter.bind(this)}
+                             capitalize="true" />
+
             </div>
         )
     }
