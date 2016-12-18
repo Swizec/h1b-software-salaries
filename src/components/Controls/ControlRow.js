@@ -6,10 +6,10 @@ import Toggle from './Toggle';
 
 class ControlRow extends Component {
     makePick(picked, newState) {
-        var toggleValues = this.state.toggleValues;
+        let toggleValues = this.state.toggleValues;
 
         toggleValues = _.mapValues(toggleValues,
-                                   (value, key) => newState && key == picked);
+                                   (value, key) => newState && key == picked); // eslint-disable-line
 
         // if newState is false, we want to reset
         this.props.updateDataFilter(picked, !newState);
@@ -18,25 +18,11 @@ class ControlRow extends Component {
     }
 
     componentWillMount() {
-        let hash = window.location.hash.replace('#', '').split("-");
-        hash[0] = hash[0] != '*' ? Number(hash[0]) : '*';
-
         let toggles = this.props.toggleNames,
-            toggleValues = _.zipObject(toggles,
-                                       toggles.map(() => false));
+            toggleValues = _.zipObject(toggles, toggles.map(() => false));
 
-        this.state = {toggleValues: toggleValues};
+        this.setState({toggleValues: toggleValues});
 
-        if (hash.length) {
-            let fromUrl = hash[this.props.hashPart];
-
-            if (fromUrl !== '*' && fromUrl !== '') {
-                this.makePick(fromUrl, true);
-            }else{
-                // reset
-                this.props.updateDataFilter('', true);
-            }
-        }
     }
 
     _addToggle(name) {

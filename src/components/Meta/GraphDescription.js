@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 
 class GraphDescription extends Component {
     get jobTitleFragment() {
-        const { jobTitle, year } = this.props.filteredBy;
+        const { jobTitle } = this.props.filteredBy;
         let title;
 
         if (jobTitle === '*') {

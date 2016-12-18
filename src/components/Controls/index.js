@@ -5,17 +5,27 @@ import _ from 'lodash';
 import ControlRow from './ControlRow';
 
 class Controls extends Component {
-    constructor() {
-        super();
+    state = {
+        yearFilter: () => true,
+        jobTitleFilter: () => true,
+        USstateFilter: () => true,
+        year: '*',
+        USstate: '*',
+        jobTitle: '*'
+    };
 
-        this.state = {
-            yearFilter: () => true,
-            jobTitleFilter: () => true,
-            USstateFilter: () => true,
-            year: '*',
-            USstate: '*',
-            jobTitle: '*'
-        };
+    componentWillMount() {
+        let [year, USstate, jobTitle] = window.location.hash.replace('#', '').split("-");
+
+        if (year !== '*' && year) {
+            this.updateYearFilter(Number(year));
+        }
+        if (USstate !== '*' && USstate) {
+            this.updateUSstateFilter(USstate);
+        }
+        if (jobTitle !== '*' && jobTitle) {
+            this.updateJobTitleFilter(jobTitle);
+        }
     }
 
     updateYearFilter(year, reset) {
@@ -31,7 +41,7 @@ class Controls extends Component {
     }
 
     updateJobTitleFilter(title, reset) {
-        var filter = (d) => d.clean_job_title === title;
+        let filter = (d) => d.clean_job_title === title;
 
         if (reset || !title) {
             filter = () => true;
@@ -42,8 +52,8 @@ class Controls extends Component {
                        jobTitle: title});
     }
 
-    updateUSStateFilter(USstate, reset) {
-        var filter = (d) => d.USstate === USstate;
+    updateUSstateFilter(USstate, reset) {
+        let filter = (d) => d.USstate === USstate;
 
         if (reset || !USstate) {
             filter = () => true;
@@ -82,8 +92,6 @@ class Controls extends Component {
               jobTitles = new Set(data.map(d => d.clean_job_title)),
               USstates = new Set(data.map(d => d.USstate));
 
-        console.log(Array.from(jobTitles.values()));
-
         return (
             <div>
                 <ControlRow data={data}
@@ -91,17 +99,16 @@ class Controls extends Component {
                             hashPart="0"
                             updateDataFilter={this.updateYearFilter.bind(this)} />
 
-                 <ControlRow data={data}
-                             getToggleNames={Array.from(jobTitles.values())}
-                             hashPart="2"
-                             updateDataFilter={this.updateJobTitleFilter.bind(this)} />
+                <ControlRow data={data}
+                            toggleNames={Array.from(jobTitles.values())}
+                            hashPart="2"
+                            updateDataFilter={this.updateJobTitleFilter.bind(this)} />
 
-                 <ControlRow data={data}
-                             getToggleNames={Array.from(USstates.values())}
-                             hashPart="1"
-                             updateDataFilter={this.updateUSStateFilter.bind(this)}
-                             capitalize="true" />
-
+                <ControlRow data={data}
+                            toggleNames={Array.from(USstates.values())}
+                            hashPart="1"
+                            updateDataFilter={this.updateUSstateFilter.bind(this)}
+                            capitalize="true" />
             </div>
         )
     }

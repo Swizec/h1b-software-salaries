@@ -47,8 +47,10 @@ class App extends Component {
     }
 
     updateDataFilter(filter, filteredBy) {
-        this.setState({salariesFilter: filter,
-                       filteredBy: filteredBy});
+        this.setState({
+            salariesFilter: filter,
+            filteredBy: filteredBy
+        });
     }
 
     render() {

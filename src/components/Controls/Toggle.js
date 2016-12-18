@@ -2,26 +2,14 @@
 import React, { Component } from 'react';
 
 class Toggle extends Component {
-    constructor() {
-        super();
-
-        this.state = {value: false};
-    }
-
     handleClick(event) {
-       let newValue = !this.state.value;
-       this.setState({value: newValue});
-       this.props.onClick(this.props.name, newValue);
-    }
-
-    componentWillReceiveProps(newProps) {
-        this.setState({value: newProps.value});
+       this.props.onClick(this.props.name, !this.props.value);
     }
 
     render() {
         let className = "btn btn-default";
 
-        if (this.state.value) {
+        if (this.props.value) {
             className += " btn-primary";
         }
 

@@ -26,7 +26,7 @@ class MedianLine extends Component {
                                 [this.props.width, 5]]);
 
         const translate = `translate(${this.props.x}, ${this.yScale(median)})`,
-              medianLabel = `Median Household: \$${this.yScale.tickFormat()(median)}`;
+              medianLabel = `Median Household: $${this.yScale.tickFormat()(median)}`;
 
         return (
             <g className="mean" transform={translate}>
