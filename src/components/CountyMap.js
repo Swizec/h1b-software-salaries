@@ -18,17 +18,30 @@ const ChoroplethColors = _.reverse([
 
 const BlankColor = 'rgb(240,240,240)'
 
-// Combine array of colors and quantize scale to pick fill colo
+// Combine array of colors and quantize scale to pick fill color
 // Return a <path> element
-const County = ({ data, geoPath, feature, quantize }) => {
-    let color = BlankColor;
+class County extends Component {
+    shouldComponentUpdate(nextProps, nextState) {
+        const { zoom, data } = this.props;
 
-    if (data) {
-        color = ChoroplethColors[quantize(data.value)];
+        return zoom !== nextProps.zoom
+            || (data && data.value) !== (nextProps.data && nextProps.data.value);
     }
 
-    return (<path d={geoPath(feature)} style={{fill: color}} title={feature.id} />)
-};
+    render() {
+        const { data, geoPath, feature, quantize } = this.props;
+
+        let color = BlankColor;
+
+        if (data) {
+            color = ChoroplethColors[quantize(data.value)];
+        }
+
+        return (
+            <path d={geoPath(feature)} style={{fill: color}} title={feature.id} />
+        );
+    }
+}
 
 class CountyMap extends Component {
     // Setup default D3 objects
@@ -97,11 +110,14 @@ class CountyMap extends Component {
             // Add a single <path> for state borders
             return (
                 <g>
-                    {counties.map((feature) => <County geoPath={this.geoPath}
-                        feature={feature}
-                        key={feature.id}
-                        quantize={this.quantize}
-                        data={_.find(this.props.values, {countyID: feature.id})} />)}
+                    {counties.map((feature) => (
+                        <County geoPath={this.geoPath}
+                                feature={feature}
+                                zoom={this.props.zoom}
+                                key={feature.id}
+                                quantize={this.quantize}
+                                data={_.find(this.props.values, {countyID: feature.id})} />
+                     ))}
 
                      <path d={this.geoPath(statesMesh)} style={{fill: 'none',
                                                                 stroke: '#fff',

@@ -22,7 +22,6 @@ class ControlRow extends Component {
             toggleValues = _.zipObject(toggles, toggles.map(() => false));
 
         this.setState({toggleValues: toggleValues});
-
     }
 
     _addToggle(name) {

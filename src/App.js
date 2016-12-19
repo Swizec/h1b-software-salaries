@@ -113,6 +113,7 @@ class App extends Component {
                     <MedianLine {...params} data={filteredSalaries} x={500} y={10}
                                 width={params.width+100}
                                 median={medianHousehold} />
+
                 </svg>
 
                 <Controls data={this.state.techSalaries}
