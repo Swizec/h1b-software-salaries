@@ -91,7 +91,7 @@ class Histogram extends Component {
                 <g className="bars">
                     {bars.map(this.makeBar.bind(this))}
                 </g>
-                <Axis {...this.props} data={bars} scale={this.yScale} />
+                <Axis x={this.props.axisMargin-3} y={0} data={bars} scale={this.yScale} />
             </g>
         );
     }
