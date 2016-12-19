@@ -1,2 +1,2 @@
 
-export { default as default } from './CountyMap';
+export { default } from './CountyMap';

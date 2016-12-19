@@ -20,19 +20,19 @@ const BlankColor = 'rgb(240,240,240)'
 // Return a <path> element
 class County extends Component {
     shouldComponentUpdate(nextProps, nextState) {
-        const { zoom, data } = this.props;
+        const { zoom, value } = this.props;
 
         return zoom !== nextProps.zoom
-            || (data && data.value) !== (nextProps.data && nextProps.data.value);
+            || value !== nextProps.value;
     }
 
     render() {
-        const { data, geoPath, feature, quantize } = this.props;
+        const { value, geoPath, feature, quantize } = this.props;
 
         let color = BlankColor;
 
-        if (data) {
-            color = ChoroplethColors[quantize(data.value)];
+        if (value) {
+            color = ChoroplethColors[quantize(value)];
         }
 
         return (
