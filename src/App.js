@@ -61,8 +61,6 @@ class App extends Component {
     }
 
     render() {
-        console.log('rendering App');
-
         if (this.state.techSalaries.length < 1) {
             return (
                 <Preloader />
@@ -92,6 +90,19 @@ class App extends Component {
             zoom = this.state.filteredBy.USstate;
             medianHousehold = d3.mean(this.state.medianIncomesByUSState[zoom],
                                       d => d.medianIncome);
+        }
+
+        if (filteredSalaries.length < 10) {
+            return (
+                <div className="App container">
+                    <h2>Selection too small for useful comparison, pick something else</h2>
+
+                    <Controls data={this.state.techSalaries}
+                          updateDataFilter={this.updateDataFilter.bind(this)} />
+
+                    <small>Sources: 2014 US census data for median household incomes, <a href="http://h1bdata.info/">h1bdata.info</a> for tech salaries (filtered by "software")</small>
+                </div>
+            );
         }
 
         return (

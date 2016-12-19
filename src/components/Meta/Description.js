@@ -88,10 +88,12 @@ class Description extends Component {
         const byCounty = _.groupBy(this.props.data, 'countyID'),
               medians = this.props.medianIncomesByCounty;
 
-        let ordered = _.sortBy(_.keys(byCounty)
-                                .map(county => byCounty[county])
-                                .filter(d => d.length/this.props.data.length > 0.01),
-                               items => d3mean(items, d => d.base_salary) - medians[items[0].countyID][0].medianIncome);
+        let ordered = _.sortBy(
+            _.keys(byCounty)
+             .map(county => byCounty[county])
+             .filter(d => d.length/this.props.data.length > 0.01),
+            items => d3mean(items,
+                            d => d.base_salary) - medians[items[0].countyID][0].medianIncome);
 
         let best = ordered[ordered.length-1],
             countyMedian = medians[best[0].countyID][0].medianIncome;
