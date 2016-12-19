@@ -14,7 +14,7 @@ class Controls extends Component {
         jobTitle: '*'
     };
 
-    componentWillMount() {
+    componentDidMount() {
         let [year, USstate, jobTitle] = window.location.hash.replace('#', '').split("-");
 
         if (year !== '*' && year) {
@@ -69,11 +69,15 @@ class Controls extends Component {
                                 this.state.USstate || '*',
                                 this.state.jobTitle || '*'].join("-");
 
+        this.reportUpdateUpTheChain();
+    }
+
+    reportUpdateUpTheChain() {
         this.props.updateDataFilter(
             ((filters) => {
                 return (d) =>  filters.yearFilter(d)
-                            && filters.jobTitleFilter(d)
-                            && filters.USstateFilter(d);
+                    && filters.jobTitleFilter(d)
+                    && filters.USstateFilter(d);
             })(this.state),
             {USstate: this.state.USstate,
              year: this.state.year,
@@ -96,17 +100,17 @@ class Controls extends Component {
             <div>
                 <ControlRow data={data}
                             toggleNames={Array.from(years.values())}
-                            hashPart="0"
+                            picked={this.state.year}
                             updateDataFilter={this.updateYearFilter.bind(this)} />
 
                 <ControlRow data={data}
                             toggleNames={Array.from(jobTitles.values())}
-                            hashPart="2"
+                            picked={this.state.jobTitle}
                             updateDataFilter={this.updateJobTitleFilter.bind(this)} />
 
                 <ControlRow data={data}
                             toggleNames={Array.from(USstates.values())}
-                            hashPart="1"
+                            picked={this.state.USstate}
                             updateDataFilter={this.updateUSstateFilter.bind(this)}
                             capitalize="true" />
             </div>

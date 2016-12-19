@@ -19,9 +19,16 @@ class ControlRow extends Component {
 
     componentWillMount() {
         let toggles = this.props.toggleNames,
-            toggleValues = _.zipObject(toggles, toggles.map(() => false));
+            toggleValues = _.zipObject(toggles,
+                                       toggles.map((name) => name === this.props.picked));
 
         this.setState({toggleValues: toggleValues});
+    }
+
+    componentWillReceiveProps(nextProps) {
+        if (this.props.picked !== nextProps.picked) {
+            this.makePick(nextProps.picked, true);
+        }
     }
 
     _addToggle(name) {

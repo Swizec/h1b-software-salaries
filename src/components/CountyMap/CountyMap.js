@@ -71,8 +71,8 @@ class CountyMap extends Component {
                   statesMesh = topojson.mesh(us, us.objects.states, (a, b) => a !== b),
                   counties = topojson.feature(us, us.objects.counties).features;
 
-            const countyValueMap = _.fromPairs(this.props.values.map(d => [d.countyID,
-                                                                           d.value]));
+            const countyValueMap = _.fromPairs(this.props.values
+                                                   .map(d => [d.countyID, d.value]));
 
             // Loop through counties and draw <County> components
             // Add a single <path> for state borders

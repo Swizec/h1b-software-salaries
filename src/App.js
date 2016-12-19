@@ -46,6 +46,13 @@ class App extends Component {
         };
     }
 
+    shouldComponentUpdate(nextProps, nextState) {
+        const { techSalaries, filteredBy } = this.state;
+
+        return (techSalaries && techSalaries.length) !== (nextState.techSalaries && nextState.techSalaries.length)
+            || Object.keys(filteredBy).some(k => filteredBy[k] !== nextState.filteredBy[k]);
+    }
+
     updateDataFilter(filter, filteredBy) {
         this.setState({
             salariesFilter: filter,
@@ -54,6 +61,8 @@ class App extends Component {
     }
 
     render() {
+        console.log('rendering App');
+
         if (this.state.techSalaries.length < 1) {
             return (
                 <Preloader />
