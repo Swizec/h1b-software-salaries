@@ -1,25 +1,25 @@
 {
-  "name": "react-d3js-h1b-example",
-  "version": "0.0.1",
-  "private": true,
-  "devDependencies": {
-    "react-scripts": "0.8.4"
-  },
+    "name": "react-d3js-h1b-example",
+    "version": "0.0.1",
+    "private": true,
+    "devDependencies": {
+        "react-scripts": "1.1.0"
+    },
     "homepage": "https://swizec.github.io/h1b-software-salaries",
-  "dependencies": {
-    "bootstrap": "^3.3.7",
-    "d3": "^4.2.6",
-    "lodash": "^4.16.1",
-    "react": "^15.3.2",
-    "react-bootstrap": "^0.30.3",
-    "react-dom": "^15.3.2",
-    "string": "^3.3.1",
-    "topojson": "^1.6.27"
-  },
-  "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test --env=jsdom",
-    "eject": "react-scripts eject"
-  }
+    "dependencies": {
+        "bootstrap": "^3.3.7",
+        "d3": "^4.2.6",
+        "lodash": "^4.16.1",
+        "react": "^15.3.2",
+        "react-bootstrap": "^0.30.3",
+        "react-dom": "^15.3.2",
+        "string": "^3.3.1",
+        "topojson": "^1.6.27"
+    },
+    "scripts": {
+        "start": "react-scripts start",
+        "build": "react-scripts build",
+        "test": "react-scripts test --env=jsdom",
+        "eject": "react-scripts eject"
+    }
 }
