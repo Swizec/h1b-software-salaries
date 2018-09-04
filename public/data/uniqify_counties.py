@@ -7,7 +7,7 @@ def uniquifyIds():
 
         with open('us-county-names-normalized.csv', 'wb') as csvoutfile:
             writer = csv.writer(csvoutfile)
-            writer.writerow(reader.next())
+            writer.writerow(next(reader))
 
             counties = {}
 
@@ -28,7 +28,7 @@ def uniquifyMedians():
 
         with open('county-median-incomes-normalized.csv', 'wb') as csvoutfile:
             writer = csv.writer(csvoutfile)
-            writer.writerow(['Orig Name'] + reader.next())
+            writer.writerow(['Orig Name'] + next(reader))
 
             counties = {}
 
@@ -50,7 +50,7 @@ def uniquifyH1Bs():
 
     with open('county-median-incomes-normalized.csv') as csvfile:
         reader = csv.reader(csvfile)
-        reader.next()
+        next(reader)
 
         for row in reader:
             county = '%s, %s' % (row[0].strip(), row[2].strip())
@@ -109,13 +109,13 @@ def uniquifyH1Bs():
 
         return title
 
-    with open('h1bs-2012-2016-final-cleaned.csv') as csvfile:
+    with open('h1bs-2012-2018-final-cleaned.csv') as csvfile:
         reader = csv.reader(csvfile)
-        header = reader.next()
+        header = next(reader)
 
         header += ['countyID']
 
-        with open('h1bs-2012-2016-final-with-countyid.csv', 'wb') as csvoutfile:
+        with open('h1bs-2012-2018-final-with-countyid.csv', 'w', encoding="utf-8") as csvoutfile:
             writer = csv.writer(csvoutfile)
             writer.writerow(header)
 
@@ -185,17 +185,17 @@ def uniquifyH1Bs():
                 try:
                     row += [countyIDs[county]]
                 except KeyError:
-                    print N
-                    print row
+                    print(N)
+                    print(row)
                     continue
 
                 row[1] = cleanJobs(row[1])
 
-                print row
+                print(row)
                 writer.writerow(row)
-            print 'done'
+            print('done')
 
 if __name__ == "__main__":
-    #uniquifyIds()
-    #uniquifyMedians()
+    # uniquifyIds()
+    # uniquifyMedians()
     uniquifyH1Bs()

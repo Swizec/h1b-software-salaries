@@ -16,10 +16,10 @@ def cleanNumber(n):
     return n
 
 def cleanupMedians():
-    with open('county-median-incomes-normalized.csv', 'rb') as csvfile:
+    with open('county-median-incomes-normalized.csv', 'r') as csvfile:
         reader = csv.reader(csvfile)
 
-        with open('county-median-incomes.csv', 'wb') as csvoutfile:
+        with open('county-median-incomes.csv', 'w') as csvoutfile:
             writer = csv.writer(csvoutfile)
             writer.writerow(reader.next())
 
@@ -31,12 +31,12 @@ def cleanupMedians():
                 writer.writerow(row)
 
 def cleanupH1Bs():
-    with open('h1bs-2012-2016-final-with-countyid.csv', 'rb') as csvfile:
+    with open('h1bs-2012-2018-final-with-countyid.csv', 'r') as csvfile:
         reader = csv.reader(csvfile)
 
-        with open('h1bs-2012-2016.csv', 'wb') as csvoutfile:
+        with open('h1bs-2012-2018.csv', 'w') as csvoutfile:
             writer = csv.writer(csvoutfile)
-            writer.writerow(reader.next())
+            writer.writerow(next(reader))
 
             for row in reader:
                 row[2] = cleanNumber(row[2])
