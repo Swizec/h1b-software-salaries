@@ -1,5 +1,4 @@
 import React from "react";
-import _ from "lodash";
 
 import ControlRow from "./ControlRow";
 
@@ -37,8 +36,7 @@ class Controls extends React.Component {
             year = "*";
         }
 
-        this.setState(
-            {
+        this.setState({
                 yearFilter: filter,
                 year: year
             },
@@ -54,8 +52,7 @@ class Controls extends React.Component {
             title = "*";
         }
 
-        this.setState(
-            {
+        this.setState({
                 jobTitleFilter: filter,
                 jobTitle: title
             },
@@ -71,8 +68,7 @@ class Controls extends React.Component {
             USstate = "*";
         }
 
-        this.setState(
-            {
+        this.setState({
                 USstateFilter: filter,
                 USstate: USstate
             },
@@ -93,8 +89,7 @@ class Controls extends React.Component {
                     filters.yearFilter(d) &&
                     filters.jobTitleFilter(d) &&
                     filters.USstateFilter(d);
-            })(this.state),
-            {
+            })(this.state), {
                 USstate: this.state.USstate,
                 year: this.state.year,
                 jobTitle: this.state.jobTitle
@@ -103,36 +98,63 @@ class Controls extends React.Component {
     }
 
     render() {
-        const { data } = this.props;
+        const {
+            data
+        } = this.props;
 
         const years = new Set(data.map(d => d.submit_date.getFullYear())),
             jobTitles = new Set(data.map(d => d.clean_job_title)),
             USstates = new Set(data.map(d => d.USstate));
 
-        return (
-            <div>
-                <ControlRow
-                    data={data}
-                    toggleNames={Array.from(years.values())}
-                    picked={this.state.year}
-                    updateDataFilter={this.updateYearFilter}
-                />
+        return ( <
+            div >
+            <
+            ControlRow data = {
+                data
+            }
+            toggleNames = {
+                Array.from(years.values())
+            }
+            picked = {
+                this.state.year
+            }
+            updateDataFilter = {
+                this.updateYearFilter
+            }
+            />
 
-                <ControlRow
-                    data={data}
-                    toggleNames={Array.from(jobTitles.values())}
-                    picked={this.state.jobTitle}
-                    updateDataFilter={this.updateJobTitleFilter}
-                />
+            <
+            ControlRow data = {
+                data
+            }
+            toggleNames = {
+                Array.from(jobTitles.values())
+            }
+            picked = {
+                this.state.jobTitle
+            }
+            updateDataFilter = {
+                this.updateJobTitleFilter
+            }
+            />
 
-                <ControlRow
-                    data={data}
-                    toggleNames={Array.from(USstates.values())}
-                    picked={this.state.USstate}
-                    updateDataFilter={this.updateUSstateFilter}
-                    capitalize="true"
-                />
-            </div>
+            <
+            ControlRow data = {
+                data
+            }
+            toggleNames = {
+                Array.from(USstates.values())
+            }
+            picked = {
+                this.state.USstate
+            }
+            updateDataFilter = {
+                this.updateUSstateFilter
+            }
+            capitalize = "true" /
+            >
+            <
+            /div>
         );
     }
 }
