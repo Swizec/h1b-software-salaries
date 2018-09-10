@@ -14,7 +14,7 @@ const MedianLine = ({
     const yScale = d3
             .scaleLinear()
             .domain([0, d3.max(data, value)])
-            .range([0, height - y - bottomMargin]),
+            .range([height - y - bottomMargin, 0]),
         line = d3.line()([[0, 5], [width, 5]]);
 
     const medianValue = median || d3.median(data, value);
@@ -24,7 +24,12 @@ const MedianLine = ({
 
     return (
         <g className="mean" transform={translate}>
-            <text x={width - 5} y="0" textAnchor="end">
+            <text
+                x={width - 5}
+                y="0"
+                textAnchor="end"
+                style={{ background: "purple" }}
+            >
                 {medianLabel}
             </text>
             <path d={line} />

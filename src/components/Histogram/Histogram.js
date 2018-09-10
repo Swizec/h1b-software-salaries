@@ -54,7 +54,7 @@ class Histogram extends React.Component {
 
         yScale
             .domain([0, d3.max(bars, d => d.x1)])
-            .range([0, props.height - props.y - props.bottomMargin]);
+            .range([props.height - props.y - props.bottomMargin, 0]);
 
         return {
             ...state,
@@ -64,17 +64,19 @@ class Histogram extends React.Component {
         };
     }
 
-    makeBar = bar => {
+    makeBar = (bar, N) => {
         const { yScale, widthScale } = this.state;
 
         let percent = (bar.length / this.props.data.length) * 100;
 
+        console.log(bar);
+
         let props = {
             percent: percent,
             x: this.props.axisMargin,
-            y: yScale(bar.x0),
+            y: yScale(bar.x1),
             width: widthScale(bar.length),
-            height: yScale(bar.x1 - bar.x0),
+            height: yScale(bar.x0) - yScale(bar.x1),
             key: "histogram-bar-" + bar.x0
         };
 
@@ -89,7 +91,9 @@ class Histogram extends React.Component {
 
         return (
             <g className="histogram" transform={`translate(${x}, ${y})`}>
-                <g className="bars">{bars.map(this.makeBar)}</g>
+                <g className="bars">
+                    {bars.map(d => this.makeBar(d, bars.length))}
+                </g>
                 <Axis x={axisMargin - 3} y={0} data={bars} scale={yScale} />
             </g>
         );
