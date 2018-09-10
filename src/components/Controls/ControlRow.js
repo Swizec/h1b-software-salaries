@@ -1,35 +1,13 @@
+import React, { Component } from "react";
+import _ from "lodash";
 
-import React, { Component } from 'react';
-import _ from 'lodash';
-
-import Toggle from './Toggle';
+import Toggle from "./Toggle";
 
 class ControlRow extends Component {
-    makePick(picked, newState) {
-        let toggleValues = this.state.toggleValues;
-
-        toggleValues = _.mapValues(toggleValues,
-                                   (value, key) => newState && key == picked); // eslint-disable-line
-
+    makePick = (picked, newState) => {
         // if newState is false, we want to reset
         this.props.updateDataFilter(picked, !newState);
-
-        this.setState({toggleValues: toggleValues});
-    }
-
-    componentWillMount() {
-        let toggles = this.props.toggleNames,
-            toggleValues = _.zipObject(toggles,
-                                       toggles.map((name) => name === this.props.picked));
-
-        this.setState({toggleValues: toggleValues});
-    }
-
-    componentWillReceiveProps(nextProps) {
-        if (this.props.picked !== nextProps.picked) {
-            this.makePick(nextProps.picked, true);
-        }
-    }
+    };
 
     _addToggle(name) {
         let key = `toggle-${name}`,
@@ -40,20 +18,23 @@ class ControlRow extends Component {
         }
 
         return (
-            <Toggle label={label}
-                    name={name}
-                    key={key}
-                    value={this.state.toggleValues[name]}
-                    onClick={this.makePick.bind(this)} />
+            <Toggle
+                label={label}
+                name={name}
+                key={key}
+                value={this.props.picked === name}
+                onClick={this.makePick}
+            />
         );
     }
 
     render() {
+        const { toggleNames } = this.props;
+
         return (
             <div className="row">
                 <div className="col-md-12">
-                    {this.props.toggleNames
-                         .map(name => this._addToggle(name))}
+                    {toggleNames.map(name => this._addToggle(name))}
                 </div>
             </div>
         );
