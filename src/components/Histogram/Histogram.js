@@ -64,12 +64,10 @@ class Histogram extends React.Component {
         };
     }
 
-    makeBar = (bar, N) => {
+    makeBar = bar => {
         const { yScale, widthScale } = this.state;
 
         let percent = (bar.length / this.props.data.length) * 100;
-
-        console.log(bar);
 
         let props = {
             percent: percent,
