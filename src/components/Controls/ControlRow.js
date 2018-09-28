@@ -1,8 +1,8 @@
-import React, { Component } from "react";
+import React from "react";
 
 import Toggle from "./Toggle";
 
-class ControlRow extends Component {
+class ControlRow extends React.Component {
     makePick = (picked, newState) => {
         // if newState is false, we want to reset
         this.props.updateDataFilter(picked, !newState);
