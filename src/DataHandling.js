@@ -39,7 +39,7 @@ const cleanUSStateName = d => ({
 
 const cleanCounty = d => ({
     id: Number(d.id),
-    name: name
+    name: d.name
 });
 
 export const loadAllData = (callback = _.noop) => {

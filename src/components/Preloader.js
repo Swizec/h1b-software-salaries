@@ -1,6 +1,6 @@
 import React from "react";
 
-import PreloaderImg from "../preloading.png";
+import PreloaderImg from "../assets/preloading.png";
 
 const Preloader = () => (
     <div className="App container">
