@@ -1,24 +1,17 @@
+import React from "react";
 
-import React, { Component } from 'react';
+const Toggle = ({ label, name, value, onClick }) => {
+    let className = "btn btn-default";
 
-class Toggle extends Component {
-    handleClick(event) {
-       this.props.onClick(this.props.name, !this.props.value);
+    if (value) {
+        className += " btn-primary";
     }
 
-    render() {
-        let className = "btn btn-default";
-
-        if (this.props.value) {
-            className += " btn-primary";
-        }
-
-        return (
-            <button className={className} onClick={this.handleClick.bind(this)}>
-                {this.props.label}
-            </button>
-        );
-    }
-}
+    return (
+        <button className={className} onClick={() => onClick(name, !value)}>
+            {label}
+        </button>
+    );
+};
 
 export default Toggle;
