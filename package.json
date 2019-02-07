@@ -9,6 +9,7 @@
     "dependencies": {
         "bootstrap": "^4.1.3",
         "d3": "^5.7.0",
+        "d3blackbox": "^1.1.0",
         "lodash": "^4.16.1",
         "react": "^16.8.1",
         "react-bootstrap": "^0.32.3",
