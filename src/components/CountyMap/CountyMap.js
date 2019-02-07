@@ -50,13 +50,27 @@ const CountyMap = ({
     values
 }) => {
     // rough equivalent of constructor()
-    const [{ geoPath, quantize }, setD3objects] = useState({});
+    const [{ geoPath }, setGeoPath] = useState({});
+    const [{ quantize }, setQuantize] = useState({});
 
-    // rough equivalent of setDerivedStateFromProps
+    // update quantize when values change
+    useEffect(() => {
+        const quantize = d3.scaleQuantize().range(d3.range(9));
+
+        if (values) {
+            quantize.domain([
+                d3.quantile(values, 0.15, d => d.value),
+                d3.quantile(values, 0.85, d => d.value)
+            ]);
+        }
+
+        setQuantize({ quantize });
+    }, [values]);
+
+    // update geoPath with new projection
     useEffect(() => {
         const projection = d3.geoAlbersUsa().scale(1280),
-            geoPath = d3.geoPath().projection(projection),
-            quantize = d3.scaleQuantize().range(d3.range(9));
+            geoPath = d3.geoPath().projection(projection);
 
         projection.translate([width / 2, height / 2]).scale(width * 1.3);
 
@@ -76,15 +90,8 @@ const CountyMap = ({
             ]);
         }
 
-        if (values) {
-            quantize.domain([
-                d3.quantile(values, 0.15, d => d.value),
-                d3.quantile(values, 0.85, d => d.value)
-            ]);
-        }
-
-        setD3objects({ projection, geoPath, quantize });
-    }, [width, height, zoom, usTopoJson, USstateNames, values]);
+        setGeoPath({ geoPath });
+    }, [width, height, zoom, usTopoJson, USstateNames]);
 
     if (!usTopoJson || !geoPath || !quantize) {
         return null;
