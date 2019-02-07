@@ -2,10 +2,10 @@
 import csv, re
 
 def uniquifyIds():
-    with open('us-county-names.tsv', 'rb') as csvfile:
+    with open('us-county-names.tsv', 'r') as csvfile:
         reader = csv.reader(csvfile, delimiter="\t")
 
-        with open('us-county-names-normalized.csv', 'wb') as csvoutfile:
+        with open('us-county-names-normalized.csv', 'w') as csvoutfile:
             writer = csv.writer(csvoutfile)
             writer.writerow(next(reader))
 
@@ -196,6 +196,6 @@ def uniquifyH1Bs():
             print('done')
 
 if __name__ == "__main__":
-    # uniquifyIds()
+    uniquifyIds()
     # uniquifyMedians()
-    uniquifyH1Bs()
+    # uniquifyH1Bs()
